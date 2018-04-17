@@ -56,6 +56,18 @@ public class BaseDB extends SQLiteOpenHelper {
     public static final String  PERSON_TEL_DETAIL_PERSON_COLUMN = "person_tel";
     public static final String  MONEY_DETAIL_PERSON_COLUMN = "money";
 
+    public static final String  FOOTPRINT_TABLE = "FOOTPRINT";
+    public static final String  FOOTPRINT_ID_COLUMN = "footprint_id";
+    public static final String  FOOTPRINT_TIME_COLUMN = "footprint_time";
+    public static final String  FOOTPRINT_LOCATION_COLUMN = "footprint_location";
+    public static final String  TRIP_ID_FOOTPRINT_COLUMN = "trip_id";
+
+    public String sqlFootprint =  "CREATE TABLE IF NOT EXISTS " +  FOOTPRINT_TABLE + " (" +
+            FOOTPRINT_ID_COLUMN + " TEXT PRIMARY KEY NOT NULL,  " +
+            FOOTPRINT_TIME_COLUMN + " TEXT NOT NULL,  " +
+            FOOTPRINT_LOCATION_COLUMN + " TEXT NOT NULL,  " +
+            TRIP_ID_FOOTPRINT_COLUMN + " TEXT)";
+
     public String sqlDetail = "CREATE TABLE IF NOT EXISTS " +  DETAIL_TABLE + " (" +
             DETAIL_ID_DETAIL_COLUMN + " TEXT PRIMARY KEY NOT NULL,  " +
             TRIP_ID_DETAIL_COLUMN + " TEXT NOT NULL,  " +
@@ -106,6 +118,8 @@ public class BaseDB extends SQLiteOpenHelper {
         db.execSQL(sqlPerson);
         db.execSQL(sqlTrip);
         db.execSQL(sqlTripPerson);
+        db.execSQL(sqlFootprint);
+//        db.close();
     }
 
     @Override

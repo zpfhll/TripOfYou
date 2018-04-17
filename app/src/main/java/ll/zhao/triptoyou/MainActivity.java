@@ -18,16 +18,14 @@ public class MainActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         PersonSqlDao personSqlDao = new PersonSqlDao(this);
+//
+//        Person person = new Person();
+//        person.setTel("18111123422");
+//        person.setName("赵鹏飞");
+//        person.setIcon(BitmapFactory.decodeResource(getResources(),R.mipmap.ic_launcher));
+//
+//        personSqlDao.insert(person);
 
-        Person person = new Person();
-        person.setTel("181111234567");
-        person.setName("赵鹏飞");
-        person.setIcon(BitmapFactory.decodeResource(getResources(),R.mipmap.ic_launcher));
-
-        personSqlDao.insert(person);
-
-
-        Log.i("--->main",person.getClass().getSimpleName());
         personSqlDao.getAllData();
     }
 

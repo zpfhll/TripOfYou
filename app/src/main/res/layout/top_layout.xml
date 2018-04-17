@@ -24,27 +24,34 @@
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="80dp"
-
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <View
+        android:id="@+id/menu_background"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:background="#404B69"
         android:alpha="0.5"/>
 
-    <ImageButton
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_marginStart="18dp"
-        android:layout_marginTop="15dp"
-        android:background="@mipmap/menu"
+
+    <LinearLayout
+        android:id="@+id/menu_button"
+        android:layout_width="70dp"
+        android:layout_height="60dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+        <ImageButton
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="18dp"
+            android:layout_marginTop="15dp"
+            android:background="@mipmap/menu" />
+    </LinearLayout>
 
     <ImageButton
+        android:id="@+id/map"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_marginEnd="25dp"
@@ -53,5 +60,34 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <ImageView
+        android:id="@+id/persons"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:src="@mipmap/friend"
+        android:clickable="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"/>
+
+    <ImageView
+        android:id="@+id/history"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:src="@mipmap/time"
+        android:clickable="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"/>
+
+    <ImageView
+        android:id="@+id/add_trip"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:src="@mipmap/camera"
+        android:clickable="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"/>
 
 </android.support.constraint.ConstraintLayout>

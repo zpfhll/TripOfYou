@@ -26,7 +26,7 @@ public class HLLButton extends Button {
             public boolean onTouch(View v, MotionEvent event) {
 
                 if(event.getAction() == MotionEvent.ACTION_DOWN){
-                    setAlpha(0.5f);
+                    setAlpha(0.7f);
                 }else if(event.getAction() == MotionEvent.ACTION_UP){
                     setAlpha(1.0f);
 

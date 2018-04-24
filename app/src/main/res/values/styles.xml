@@ -4,4 +4,7 @@
     <style name="AppTheme" parent="android:Theme.Light.NoTitleBar">
     </style>
 
+    <style name="AlertDialog" parent="@android:style/Theme.DeviceDefault.Dialog.Alert">
+        <item name="android:background">@color/deep_gray</item>
+    </style>
 </resources>

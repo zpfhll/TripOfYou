@@ -17,7 +17,7 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
-
+    <string name="close">关闭</string>
 
     <!-- Login -->
     <string name="login_pattern_guide_first">请设定图形锁</string>
@@ -25,6 +25,9 @@
     <string name="login_pattern_guide_nomacth">图形锁不一致，请重新设定</string>
     <string name="login_pattern_guide_retry">设定失败，请重新设定</string>
     <string name="login_pattern_guide_success">设定成功</string>
+    <string name="login_error_message">请输入名字和电话！</string>
+    <string name="login_error_message1">登录失败，请再次登录！</string>
+
 
     <string name="login_pattern_retry">＜</string>
 </resources>

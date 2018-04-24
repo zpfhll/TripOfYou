@@ -56,11 +56,13 @@
         <!-- 定位需要的服务 使用2.0的定位需要加上这个 -->
         <service android:name="com.amap.api.location.APSService" />
 
-        <activity android:name=".map.MapActivity" />
-        <activity
-            android:name=".LoginActivity"
-            android:label="@string/title_activity_login" />
-        <activity android:name=".login.LoginActivity"></activity>
+        <activity android:name=".map.MapActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".login.LoginActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan">
+
+        </activity>
     </application>
 
 </manifest>

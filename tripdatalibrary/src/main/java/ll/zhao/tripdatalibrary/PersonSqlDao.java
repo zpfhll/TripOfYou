@@ -87,6 +87,7 @@ public class PersonSqlDao implements BaseSqlDao {
             Person person = (Person) model;
                 stat = sqlDatabase.compileStatement(insertSql);
                 stat.bindString(1, person.getTel());
+                stat.bindString(2, person.getName());
                 stat.bindString(3, person.getType());
                 if (person.getIcon() != null) {
                     stat.bindBlob(4, Utils.bitmabToBytes(context, person.getIcon()));

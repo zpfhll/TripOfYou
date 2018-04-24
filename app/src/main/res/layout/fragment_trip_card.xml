@@ -72,7 +72,7 @@
                 android:textSize="15sp" />
         </LinearLayout>
 
-        <Button
+        <ll.zhao.triptoyou.custom.HLLButton
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_marginTop="160dp"
@@ -87,7 +87,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <Button
+        <ll.zhao.triptoyou.custom.HLLButton
             android:id="@+id/delete_card"
             android:layout_width="25dp"
             android:layout_height="25dp"
@@ -102,7 +102,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <Button
+        <ll.zhao.triptoyou.custom.HLLButton
             android:id="@+id/contacts"
             android:layout_width="30dp"
             android:layout_height="30dp"
@@ -113,7 +113,7 @@
             app:layout_constraintEnd_toStartOf="@+id/guideline"
             app:layout_constraintTop_toBottomOf="@+id/trip_name" />
 
-        <Button
+        <ll.zhao.triptoyou.custom.HLLButton
             android:id="@+id/detail"
             android:layout_width="25dp"
             android:layout_height="25dp"

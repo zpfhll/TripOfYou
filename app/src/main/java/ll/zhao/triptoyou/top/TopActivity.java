@@ -23,6 +23,7 @@ import ll.zhao.tripdatalibrary.model.TripModel;
 import ll.zhao.triptoyou.BaseActivity;
 import ll.zhao.triptoyou.R;
 import ll.zhao.triptoyou.Utils;
+import ll.zhao.triptoyou.custom.HLLButton;
 import ll.zhao.triptoyou.map.MapActivity;
 
 /**
@@ -37,10 +38,10 @@ public class TopActivity extends BaseActivity implements View.OnClickListener {
 
     private LinearLayout menuBtn;
     private View menuBackground;
-    private ImageView addTrip;
-    private ImageView persons;
-    private ImageView history;
-    private ImageButton mapBtn;
+    private HLLButton addTrip;
+    private HLLButton persons;
+    private HLLButton history;
+    private HLLButton mapBtn;
 
     private int heigth ;
     private int width;

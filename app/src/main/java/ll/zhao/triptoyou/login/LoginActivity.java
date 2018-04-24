@@ -18,6 +18,7 @@ import ll.zhao.triptoyou.HLLog;
 import ll.zhao.triptoyou.MainActivity;
 import ll.zhao.triptoyou.R;
 import ll.zhao.triptoyou.Utils;
+import ll.zhao.triptoyou.custom.HLLButton;
 import ll.zhao.triptoyou.top.TopActivity;
 
 public class LoginActivity extends BaseActivity {
@@ -27,7 +28,7 @@ public class LoginActivity extends BaseActivity {
 
     private String patternFirst = "";
     private boolean isFirstPattern = true;
-    private Button patternRedo;
+    private HLLButton patternRedo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

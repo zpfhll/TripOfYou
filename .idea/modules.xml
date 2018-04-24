@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/TripOfYou.iml" filepath="$PROJECT_DIR$/TripOfYou.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/delete.iml" filepath="$PROJECT_DIR$/delete.iml" />
       <module fileurl="file://$PROJECT_DIR$/tripdatalibrary/tripdatalibrary.iml" filepath="$PROJECT_DIR$/tripdatalibrary/tripdatalibrary.iml" />
     </modules>
   </component>

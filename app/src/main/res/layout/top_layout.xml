@@ -50,8 +50,8 @@
             android:background="@mipmap/menu" />
     </LinearLayout>
 
-    <ImageButton
-        android:id="@+id/map"
+    <ll.zhao.triptoyou.custom.HLLButton
+        android:id="@+id/map_button"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_marginEnd="25dp"
@@ -60,31 +60,31 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
+    <ll.zhao.triptoyou.custom.HLLButton
         android:id="@+id/persons"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:src="@mipmap/friend"
+        android:background="@mipmap/friend"
         android:clickable="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:visibility="gone"/>
 
-    <ImageView
+    <ll.zhao.triptoyou.custom.HLLButton
         android:id="@+id/history"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:src="@mipmap/time"
+        android:background="@mipmap/time"
         android:clickable="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:visibility="gone"/>
 
-    <ImageView
+    <ll.zhao.triptoyou.custom.HLLButton
         android:id="@+id/add_trip"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:src="@mipmap/camera"
+        android:background="@mipmap/camera"
         android:clickable="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

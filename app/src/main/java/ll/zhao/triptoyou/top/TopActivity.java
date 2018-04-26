@@ -1,9 +1,9 @@
 package ll.zhao.triptoyou.top;
 
+import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
@@ -20,13 +20,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ll.zhao.tripdatalibrary.model.TripModel;
+import ll.zhao.triptoyou.BaseActivity;
 import ll.zhao.triptoyou.R;
 import ll.zhao.triptoyou.Utils;
+import ll.zhao.triptoyou.custom.HLLButton;
+import ll.zhao.triptoyou.map.MapActivity;
 
 /**
  * Created by Administrator on 2018/3/25.
  */
-public class TopActivity extends FragmentActivity implements View.OnClickListener {
+public class TopActivity extends BaseActivity implements View.OnClickListener {
 
     private List<TripCardFragment> fragmentList;
     private TripAdpter tripAdpter;
@@ -35,9 +38,10 @@ public class TopActivity extends FragmentActivity implements View.OnClickListene
 
     private LinearLayout menuBtn;
     private View menuBackground;
-    private ImageView addTrip;
-    private ImageView persons;
-    private ImageView history;
+    private HLLButton addTrip;
+    private HLLButton persons;
+    private HLLButton history;
+    private HLLButton mapBtn;
 
     private int heigth ;
     private int width;
@@ -45,12 +49,15 @@ public class TopActivity extends FragmentActivity implements View.OnClickListene
 
     private SpringSystem springSystem;
     private Spring showMenuSpring;
-    private Spring closeMenuSpring;
 
     private boolean menuIsShowing;
 
     //是否应该隐藏菜单按钮
     private boolean isShouldHidenMenuBtn = false;
+    //是否应该展开菜单按钮
+    private boolean isShouldShowMenuBtn = false;
+    //按钮是否按下
+    private boolean isClicked = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -70,6 +77,10 @@ public class TopActivity extends FragmentActivity implements View.OnClickListene
         persons = findViewById(R.id.persons);
         addTrip = findViewById(R.id.add_trip);
         history = findViewById(R.id.history);
+        mapBtn = findViewById(R.id.map_button);
+        mapBtn.setOnClickListener(this);
+
+        menuBackgroundHeigth = Utils.dp2pxS(this,50);
 
         TripModel tripModel1 = new TripModel();
         tripModel1.setImage1(BitmapFactory.decodeResource(getResources(),R.mipmap.i1));
@@ -141,6 +152,9 @@ public class TopActivity extends FragmentActivity implements View.OnClickListene
                     addTrip.setVisibility(View.GONE);
                     persons.setVisibility(View.GONE);
                     history.setVisibility(View.GONE);
+                    isClicked = false;
+                }else if(currentValue == 1 && isShouldShowMenuBtn) {
+                    isClicked = false;
                 }
             }
             @Override
@@ -152,6 +166,8 @@ public class TopActivity extends FragmentActivity implements View.OnClickListene
             public void onSpringActivate(Spring spring) {
                 if(spring.getEndValue() == 0){
                     isShouldHidenMenuBtn = true;
+                }else if(spring.getEndValue() == 1){
+                    isShouldShowMenuBtn = true;
                 }
             }
 
@@ -167,18 +183,21 @@ public class TopActivity extends FragmentActivity implements View.OnClickListene
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.menu_button:
-                if(!menuIsShowing){
-                    menuIsShowing = true;
-                    menuBackgroundHeigth = menuBackground.getHeight();
-                    addTrip.setVisibility(View.VISIBLE);
-                    persons.setVisibility(View.VISIBLE);
-                    history.setVisibility(View.VISIBLE);
-                    showMenuSpring.setCurrentValue(0);
-                    showMenuSpring.setEndValue(1);
-                }else{
-                    menuIsShowing = false;
-                    showMenuSpring.setCurrentValue(1);
-                    showMenuSpring.setEndValue(0);
+                if(!isClicked) {
+                    isClicked = true;
+                    if (!menuIsShowing) {
+                        menuIsShowing = true;
+//                        menuBackgroundHeigth = menuBackground.getHeight();
+                        addTrip.setVisibility(View.VISIBLE);
+                        persons.setVisibility(View.VISIBLE);
+                        history.setVisibility(View.VISIBLE);
+                        showMenuSpring.setCurrentValue(0);
+                        showMenuSpring.setEndValue(1);
+                    } else {
+                        menuIsShowing = false;
+                        showMenuSpring.setCurrentValue(1);
+                        showMenuSpring.setEndValue(0);
+                    }
                 }
                 break;
             case R.id.menu_background:
@@ -187,6 +206,10 @@ public class TopActivity extends FragmentActivity implements View.OnClickListene
                     showMenuSpring.setCurrentValue(1);
                     showMenuSpring.setEndValue(0);
                 }
+                break;
+            case R.id.map_button:
+                Intent intent = new Intent(TopActivity.this, MapActivity.class);
+                startActivity(intent);
                 break;
             default:
                 break;

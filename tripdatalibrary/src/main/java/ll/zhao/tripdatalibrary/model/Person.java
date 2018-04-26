@@ -11,6 +11,7 @@ public class Person extends BaseModel {
     private String tel = "";
     private String name = "";
     private Bitmap icon = null;
+    private String type = "1";
 
     public String getKey(){
         return tel;
@@ -46,7 +47,15 @@ public class Person extends BaseModel {
 
     @Override
     public String toString() {
-        String str = "Tel:" + tel + " Name:" + name + " Icon:" + icon;
+        String str = "Tel:" + tel + " Name:" + name + " Type:" + type + " Icon:" + icon;
         return str;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

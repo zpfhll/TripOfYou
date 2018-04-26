@@ -23,7 +23,8 @@ public class PersonSqlDao implements BaseSqlDao {
     private static final String insertSql = "insert into  " +  BaseDB.PERSON_TABLE + " (" +
             BaseDB.TEL_PERSON_COLUMN + ",  " +
             BaseDB.NAME_PERSON_COLUMN  + ",  " +
-            BaseDB.ICON_PERSON_COLUMN + ") values (?,?,?)";
+            BaseDB.TYPE_PERSON_COLUMN  + ",  " +
+            BaseDB.ICON_PERSON_COLUMN + ") values (?,?,?,?)";
 
     private static final String selectSql = "select * from " + BaseDB.PERSON_TABLE;
 
@@ -52,8 +53,9 @@ public class PersonSqlDao implements BaseSqlDao {
                 stat = sqlDatabase.compileStatement(insertSql);
                 stat.bindString(1, person.getTel());
                 stat.bindString(2, person.getName());
+                stat.bindString(3, person.getType());
                 if (person.getIcon() != null) {
-                    stat.bindBlob(3, Utils.bitmabToBytes(context, person.getIcon()));
+                    stat.bindBlob(4, Utils.bitmabToBytes(context, person.getIcon()));
                 }
                 stat.executeInsert();
             }
@@ -86,8 +88,9 @@ public class PersonSqlDao implements BaseSqlDao {
                 stat = sqlDatabase.compileStatement(insertSql);
                 stat.bindString(1, person.getTel());
                 stat.bindString(2, person.getName());
+                stat.bindString(3, person.getType());
                 if (person.getIcon() != null) {
-                    stat.bindBlob(3, Utils.bitmabToBytes(context, person.getIcon()));
+                    stat.bindBlob(4, Utils.bitmabToBytes(context, person.getIcon()));
                 }
                 stat.executeInsert();
             sqlDatabase.setTransactionSuccessful();
@@ -112,6 +115,7 @@ public class PersonSqlDao implements BaseSqlDao {
             Person person = new Person();
             person.setTel(cursor.getString(cursor.getColumnIndex(BaseDB.TEL_PERSON_COLUMN)));
             person.setName(cursor.getString(cursor.getColumnIndex(BaseDB.NAME_PERSON_COLUMN)));
+            person.setType(cursor.getString(cursor.getColumnIndex(BaseDB.TYPE_PERSON_COLUMN)));
             byte[] icon = cursor.getBlob(cursor.getColumnIndex(BaseDB.ICON_PERSON_COLUMN));
             if(icon != null && icon.length > 0){
                 person.setIcon(icon);
@@ -145,6 +149,7 @@ public class PersonSqlDao implements BaseSqlDao {
             Person person = new Person();
             person.setTel(cursor.getString(cursor.getColumnIndex(BaseDB.TEL_PERSON_COLUMN)));
             person.setName(cursor.getString(cursor.getColumnIndex(BaseDB.NAME_PERSON_COLUMN)));
+            person.setType(cursor.getString(cursor.getColumnIndex(BaseDB.TYPE_PERSON_COLUMN)));
             byte[] icon = cursor.getBlob(cursor.getColumnIndex(BaseDB.ICON_PERSON_COLUMN));
             if(icon != null && icon.length > 0){
                 person.setIcon(icon);

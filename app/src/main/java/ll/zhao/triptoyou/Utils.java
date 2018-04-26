@@ -1,14 +1,37 @@
 package ll.zhao.triptoyou;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.security.keystore.KeyGenParameterSpec;
+import android.security.keystore.KeyProperties;
+import android.util.Base64;
 import android.util.Log;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.security.KeyPairGenerator;
+import java.security.KeyStore;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+
+import javax.crypto.Cipher;
+import javax.crypto.CipherInputStream;
+import javax.crypto.CipherOutputStream;
+
+import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Created by Administrator on 2018/4/4.
  */
 
 public class Utils {
+
+    private static final String KEY_PROVIDER = "AndroidKeyStore";
+    private static final String ALGORITHM = "AES/CBC/PKSC7Padding";
+
+    public static final String PATTERN_ALISA = "pattern";
+
 
     public static int px2dp(Context context, float pxValue) {
         final float scale = context.getResources().getDisplayMetrics().density / 2;
@@ -17,7 +40,11 @@ public class Utils {
 
     public static int dp2px(Context context, float pxValue) {
         final float scale = context.getResources().getDisplayMetrics().density / 2;
-        Log.i("------>", scale + "");
+        return (int) (pxValue * scale + 0.5f);
+    }
+
+    public static int dp2pxS(Context context, float pxValue) {
+        final float scale = context.getResources().getDisplayMetrics().density ;
         return (int) (pxValue * scale + 0.5f);
     }
 
@@ -258,4 +285,114 @@ public class Utils {
         bitmap.setPixels(pix, 0, w, 0, 0, w, h);
         return (bitmap);
     }
+
+
+    /**
+     * AndroidKeyStoreの準備
+     */
+    public static KeyStore prepareKeyStore(String alias) {
+        KeyStore mKeyStore = null;
+        try {
+            mKeyStore = KeyStore.getInstance("AndroidKeyStore");
+            mKeyStore.load(null);
+            if (!mKeyStore.containsAlias(alias)) {
+                KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(
+                        KeyProperties.KEY_ALGORITHM_RSA, KEY_PROVIDER);
+                keyPairGenerator.initialize(
+                        new KeyGenParameterSpec.Builder(
+                                alias,
+                                KeyProperties.PURPOSE_DECRYPT)
+                                .setDigests(KeyProperties.DIGEST_SHA256, KeyProperties.DIGEST_SHA512)
+                                .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_RSA_OAEP)
+                                .build());
+                keyPairGenerator.generateKeyPair();
+            }
+        } catch (Exception e) {
+            HLLog.showLog("Utils","prepareKeyStore",e.getMessage());
+        }
+        return mKeyStore;
+    }
+
+    /**
+     * Encrypt string text
+     *
+     * @param alias key alias
+     * @param plainText string to be encrypted
+     *
+     * @return base64 encoded cipher text
+     */
+    public static String encryptString(String alias, String plainText) {
+        String encryptedText = "";
+        KeyStore mKeyStore = prepareKeyStore(alias);
+        if(mKeyStore == null){
+            return  encryptedText;
+        }
+        try {
+            PublicKey publicKey = mKeyStore.getCertificate(alias).getPublicKey();
+
+            Cipher cipher = Cipher.getInstance(ALGORITHM);
+            cipher.init(Cipher.ENCRYPT_MODE, publicKey);
+
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            CipherOutputStream cipherOutputStream = new CipherOutputStream(
+                    outputStream, cipher);
+            cipherOutputStream.write(plainText.getBytes("UTF-8"));
+            cipherOutputStream.close();
+
+            byte [] bytes = outputStream.toByteArray();
+            encryptedText = Base64.encodeToString(bytes, Base64.DEFAULT);
+        } catch (Exception e) {
+            HLLog.showLog("Utils","encryptString",e.getMessage());
+        }
+        return encryptedText;
+    }
+
+    /**
+     * Decrypt base64 encoded cipher text
+     *
+     * @param alias key alias
+     * @param encryptedText base64 encoded cipher text
+     *
+     * @return plain text string
+     */
+    public static String decryptString(String alias, String encryptedText) {
+        String plainText = "";
+        KeyStore mKeyStore = prepareKeyStore(alias);
+        if(mKeyStore == null){
+            return  encryptedText;
+        }
+        try {
+            PrivateKey privateKey = (PrivateKey) mKeyStore.getKey(alias, null);
+
+            Cipher cipher = Cipher.getInstance(ALGORITHM);
+            cipher.init(Cipher.DECRYPT_MODE, privateKey);
+
+            CipherInputStream cipherInputStream = new CipherInputStream(
+                    new ByteArrayInputStream(Base64.decode(encryptedText, Base64.DEFAULT)), cipher);
+
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            int b;
+            while ((b = cipherInputStream.read()) != -1) {
+                outputStream.write(b);
+            }
+            outputStream.close();
+            plainText = outputStream.toString("UTF-8");
+        } catch (Exception e) {
+            HLLog.showLog("Utils","decryptString",e.getMessage());
+        }
+        return plainText;
+    }
+
+    public static void saveDateToShare(Context context,String key,String value){
+        SharedPreferences dataStore = context.getSharedPreferences("TripStore", MODE_PRIVATE);
+        SharedPreferences.Editor editor = dataStore.edit();
+        editor.putString(key, value);
+        editor.apply();
+    }
+
+    public static String getDateFromShare(Context context,String key){
+        SharedPreferences dataStore = context.getSharedPreferences("TripStore", MODE_PRIVATE);
+        return dataStore.getString(key,"");
+    }
+
 }

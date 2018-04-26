@@ -38,6 +38,8 @@ public class BaseDB extends SQLiteOpenHelper {
     public static final String  TEL_PERSON_COLUMN = "tel";
     public static final String  NAME_PERSON_COLUMN = "name";
     public static final String  ICON_PERSON_COLUMN = "icon";
+    public static final String  TYPE_PERSON_COLUMN = "type";
+
 
     public static final String  TRIP_PERSON_TABLE = "TRIP_PERSON";
     public static final String  TRIP_ID_TRIP_PERSON_COLUMN = "trip_id";
@@ -85,8 +87,9 @@ public class BaseDB extends SQLiteOpenHelper {
             Y_LOCATION_COLUMN + " DOUBLE NOT NULL,  " +
             STATE_LOCATION_COLUMN + " INT)";
     public String sqlPerson = "CREATE TABLE IF NOT EXISTS " +  PERSON_TABLE + " (" +
-           TEL_PERSON_COLUMN + " TEXT PRIMARY KEY NOT NULL,  " +
-           NAME_PERSON_COLUMN  + " TEXT NOT NULL,  " +
+            TEL_PERSON_COLUMN + " TEXT PRIMARY KEY NOT NULL,  " +
+            NAME_PERSON_COLUMN  + " TEXT NOT NULL,  " +
+            TYPE_PERSON_COLUMN + " TEXT NOT NULL,  " +
             ICON_PERSON_COLUMN + " BLOB)";
     public String sqlTrip = "CREATE TABLE IF NOT EXISTS " +  TRIP_TABLE + " ( " +
             ID_TRIP_COLUMN + " TEXT PRIMARY KEY NOT NULL,  " +
@@ -119,7 +122,6 @@ public class BaseDB extends SQLiteOpenHelper {
         db.execSQL(sqlTrip);
         db.execSQL(sqlTripPerson);
         db.execSQL(sqlFootprint);
-//        db.close();
     }
 
     @Override

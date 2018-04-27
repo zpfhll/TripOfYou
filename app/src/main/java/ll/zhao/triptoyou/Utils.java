@@ -32,6 +32,10 @@ public class Utils {
 
     public static final String PATTERN_ALISA = "pattern";
 
+    //ロングインflag
+    public static final String LOGIN_FLAG = "loginflg";
+    //ログイン完了の値
+    public static final String LOGIN_DONE = "1";
 
     public static int px2dp(Context context, float pxValue) {
         final float scale = context.getResources().getDisplayMetrics().density / 2;

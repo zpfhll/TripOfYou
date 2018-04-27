@@ -1,5 +1,6 @@
 package ll.zhao.triptoyou.top;
 
+import android.support.v4.app.FragmentTransaction;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -19,6 +21,9 @@ import com.facebook.rebound.SpringSystem;
 import java.util.ArrayList;
 import java.util.List;
 
+import ll.zhao.tripdatalibrary.BaseDB;
+import ll.zhao.tripdatalibrary.PersonSqlDao;
+import ll.zhao.tripdatalibrary.model.PersonModel;
 import ll.zhao.tripdatalibrary.model.TripModel;
 import ll.zhao.triptoyou.BaseActivity;
 import ll.zhao.triptoyou.R;
@@ -29,7 +34,7 @@ import ll.zhao.triptoyou.map.MapActivity;
 /**
  * Created by Administrator on 2018/3/25.
  */
-public class TopActivity extends BaseActivity implements View.OnClickListener {
+public class TopActivity extends BaseActivity{
 
     private List<TripCardFragment> fragmentList;
     private TripAdpter tripAdpter;
@@ -42,6 +47,8 @@ public class TopActivity extends BaseActivity implements View.OnClickListener {
     private HLLButton persons;
     private HLLButton history;
     private HLLButton mapBtn;
+
+    private FrameLayout menuUserInfoView;
 
     private int heigth ;
     private int width;
@@ -59,6 +66,8 @@ public class TopActivity extends BaseActivity implements View.OnClickListener {
     //按钮是否按下
     private boolean isClicked = false;
 
+    private PersonSqlDao personSqlDao;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,6 +76,7 @@ public class TopActivity extends BaseActivity implements View.OnClickListener {
         heigth = getResources().getDisplayMetrics().heightPixels;
         width = getResources().getDisplayMetrics().widthPixels;
         menuIsShowing = false;
+        deviceBackIsEnable = false;
 
         tripPage = findViewById(R.id.viewPager);
         rootBackground = findViewById(R.id.root_background);
@@ -79,6 +89,17 @@ public class TopActivity extends BaseActivity implements View.OnClickListener {
         history = findViewById(R.id.history);
         mapBtn = findViewById(R.id.map_button);
         mapBtn.setOnClickListener(this);
+
+        menuUserInfoView = findViewById(R.id.menu_user_info);
+
+        personSqlDao = new PersonSqlDao(this);
+
+        PersonModel personModel = personSqlDao.getSelfData();
+        UserInfoFragment userInfoFragment = UserInfoFragment.newInstance(personModel);
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.menu_user_info,userInfoFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
 
         menuBackgroundHeigth = Utils.dp2pxS(this,50);
 
@@ -155,6 +176,7 @@ public class TopActivity extends BaseActivity implements View.OnClickListener {
                     isClicked = false;
                 }else if(currentValue == 1 && isShouldShowMenuBtn) {
                     isClicked = false;
+
                 }
             }
             @Override
@@ -180,39 +202,61 @@ public class TopActivity extends BaseActivity implements View.OnClickListener {
 
 
     @Override
-    public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.menu_button:
-                if(!isClicked) {
-                    isClicked = true;
-                    if (!menuIsShowing) {
-                        menuIsShowing = true;
+    public void baseOnClick(View v) {
+        if(clickIsDone){
+            super.baseOnClick(v);
+            clickIsDone = false;
+
+            //TODO ユーザー情報のアニメ
+
+
+            switch (v.getId()){
+                case R.id.menu_button:
+
+                    if(menuIsShowing){
+                        menuUserInfoView.setVisibility(View.GONE);
+                    }else{
+                        menuUserInfoView.setVisibility(View.VISIBLE);
+                    }
+
+                    if(!isClicked) {
+                        isClicked = true;
+                        if (!menuIsShowing) {
+                            menuIsShowing = true;
 //                        menuBackgroundHeigth = menuBackground.getHeight();
-                        addTrip.setVisibility(View.VISIBLE);
-                        persons.setVisibility(View.VISIBLE);
-                        history.setVisibility(View.VISIBLE);
-                        showMenuSpring.setCurrentValue(0);
-                        showMenuSpring.setEndValue(1);
-                    } else {
+                            addTrip.setVisibility(View.VISIBLE);
+                            persons.setVisibility(View.VISIBLE);
+                            history.setVisibility(View.VISIBLE);
+                            showMenuSpring.setCurrentValue(0);
+                            showMenuSpring.setEndValue(1);
+                        } else {
+                            menuIsShowing = false;
+                            showMenuSpring.setCurrentValue(1);
+                            showMenuSpring.setEndValue(0);
+                        }
+                    }
+                    break;
+                case R.id.menu_background:
+                    if(menuIsShowing) {
                         menuIsShowing = false;
                         showMenuSpring.setCurrentValue(1);
                         showMenuSpring.setEndValue(0);
                     }
-                }
-                break;
-            case R.id.menu_background:
-                if(menuIsShowing) {
-                    menuIsShowing = false;
-                    showMenuSpring.setCurrentValue(1);
-                    showMenuSpring.setEndValue(0);
-                }
-                break;
-            case R.id.map_button:
-                Intent intent = new Intent(TopActivity.this, MapActivity.class);
-                startActivity(intent);
-                break;
-            default:
-                break;
+                    break;
+                case R.id.map_button:
+                    Intent intent = new Intent(TopActivity.this, MapActivity.class);
+                    startActivity(intent);
+                    if(menuIsShowing) {
+                        menuIsShowing = false;
+                        showMenuSpring.setCurrentValue(1);
+                        showMenuSpring.setEndValue(0);
+                    }
+
+                    break;
+                default:
+                    break;
+            }
+            clickIsDone = true;
         }
     }
 }

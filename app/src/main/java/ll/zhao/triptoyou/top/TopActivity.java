@@ -1,5 +1,8 @@
 package ll.zhao.triptoyou.top;
 
+import android.arch.lifecycle.ViewModelProviders;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
@@ -30,11 +33,14 @@ import ll.zhao.triptoyou.R;
 import ll.zhao.triptoyou.Utils;
 import ll.zhao.triptoyou.custom.HLLButton;
 import ll.zhao.triptoyou.map.MapActivity;
+import ll.zhao.triptoyou.model.UserInfoViewModel;
 
 /**
  * Created by Administrator on 2018/3/25.
  */
 public class TopActivity extends BaseActivity{
+
+
 
     private List<TripCardFragment> fragmentList;
     private TripAdpter tripAdpter;
@@ -49,6 +55,7 @@ public class TopActivity extends BaseActivity{
     private HLLButton mapBtn;
 
     private FrameLayout menuUserInfoView;
+    private FrameLayout menuUserInfoModifyView;
 
     private int heigth ;
     private int width;
@@ -89,17 +96,16 @@ public class TopActivity extends BaseActivity{
         history = findViewById(R.id.history);
         mapBtn = findViewById(R.id.map_button);
         mapBtn.setOnClickListener(this);
-
+        menuUserInfoModifyView = findViewById(R.id.user_info_modify);
         menuUserInfoView = findViewById(R.id.menu_user_info);
+        menuUserInfoView.setOnClickListener(this);
+        menuUserInfoView.setVisibility(View.GONE);
 
         personSqlDao = new PersonSqlDao(this);
 
         PersonModel personModel = personSqlDao.getSelfData();
         UserInfoFragment userInfoFragment = UserInfoFragment.newInstance(personModel);
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.menu_user_info,userInfoFragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
+        addFragement(userInfoFragment,R.id.menu_user_info);
 
         menuBackgroundHeigth = Utils.dp2pxS(this,50);
 
@@ -156,17 +162,20 @@ public class TopActivity extends BaseActivity{
                 menuBtn.setRotation((float) (90 * currentValue));
 
                 persons.setTranslationX((float) ((width/6 - persons.getWidth()/2) * currentValue));
-                persons.setTranslationY((float)((heigth - 200) / 2 * currentValue));
+                persons.setTranslationY((float)(heigth / 2 * currentValue));
 
                 addTrip.setTranslationX((float) ((width/2 - addTrip.getWidth()/2) * currentValue));
-                addTrip.setTranslationY((float)((heigth - 200) / 2 * currentValue));
+                addTrip.setTranslationY((float)(heigth  / 2 * currentValue));
 
                 history.setTranslationX((float) ((width / 3 * 2 + width/6 - history.getWidth()/2) * currentValue));
-                history.setTranslationY((float)((heigth - 200) / 2 * currentValue));
+                history.setTranslationY((float)(heigth / 2 * currentValue));
 
                 addTrip.setAlpha((float) (1 * currentValue));
                 persons.setAlpha((float) (1 * currentValue));
                 history.setAlpha((float) (1 * currentValue));
+
+                menuUserInfoView.setAlpha((float) (1 * currentValue));
+
                 if(currentValue == 0 && isShouldHidenMenuBtn){
                     isShouldHidenMenuBtn = false;
                     Log.i("--->","end");
@@ -174,9 +183,9 @@ public class TopActivity extends BaseActivity{
                     persons.setVisibility(View.GONE);
                     history.setVisibility(View.GONE);
                     isClicked = false;
+                    menuUserInfoView.setVisibility(View.GONE);
                 }else if(currentValue == 1 && isShouldShowMenuBtn) {
                     isClicked = false;
-
                 }
             }
             @Override
@@ -190,6 +199,7 @@ public class TopActivity extends BaseActivity{
                     isShouldHidenMenuBtn = true;
                 }else if(spring.getEndValue() == 1){
                     isShouldShowMenuBtn = true;
+                    menuUserInfoView.setVisibility(View.VISIBLE);
                 }
             }
 
@@ -206,19 +216,8 @@ public class TopActivity extends BaseActivity{
         if(clickIsDone){
             super.baseOnClick(v);
             clickIsDone = false;
-
-            //TODO ユーザー情報のアニメ
-
-
             switch (v.getId()){
                 case R.id.menu_button:
-
-                    if(menuIsShowing){
-                        menuUserInfoView.setVisibility(View.GONE);
-                    }else{
-                        menuUserInfoView.setVisibility(View.VISIBLE);
-                    }
-
                     if(!isClicked) {
                         isClicked = true;
                         if (!menuIsShowing) {
@@ -251,7 +250,12 @@ public class TopActivity extends BaseActivity{
                         showMenuSpring.setCurrentValue(1);
                         showMenuSpring.setEndValue(0);
                     }
-
+                    break;
+                case R.id.menu_user_info:
+                    PersonModel personModel = personSqlDao.getSelfData();
+                    UserInfoModifyFragment userInfoFragment = UserInfoModifyFragment.newInstance(personModel);
+                    addFragement(userInfoFragment,R.id.user_info_modify);
+                    menuUserInfoModifyView.setVisibility(View.VISIBLE);
                     break;
                 default:
                     break;
@@ -259,4 +263,28 @@ public class TopActivity extends BaseActivity{
             clickIsDone = true;
         }
     }
+
+    /**
+     * 添加fragment
+     * @param fragment
+     * @param resId
+     */
+    private void addFragement(Fragment fragment,int resId){
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(resId,fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    public void hiddenUserInfoModify(boolean isRefresh){
+        if(menuUserInfoModifyView.getVisibility() == View.VISIBLE){
+            menuUserInfoModifyView.setVisibility(View.GONE);
+            getSupportFragmentManager().popBackStack();
+            if(isRefresh){
+                PersonModel personModel = personSqlDao.getSelfData();
+                ViewModelProviders.of(this).get(UserInfoViewModel.class).getUserInfo().setValue(personModel);
+            }
+        }
+    }
+
 }

@@ -1,5 +1,6 @@
 package ll.zhao.tripdatalibrary;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -15,7 +16,7 @@ import ll.zhao.tripdatalibrary.model.PersonModel;
 /**
  * Created by Administrator on 2018/3/21.
  */
-public class PersonSqlDao implements BaseSqlDao {
+public class PersonSqlDao{
 
     private BaseDB baseDB;
 
@@ -34,8 +35,7 @@ public class PersonSqlDao implements BaseSqlDao {
          baseDB = new BaseDB(context);
      }
 
-    @Override
-    public boolean insert(List<BaseModel> list) {
+    public boolean insert(List<PersonModel> list) {
         if(list == null || list.size() < 1){
             return true;
         }
@@ -45,9 +45,7 @@ public class PersonSqlDao implements BaseSqlDao {
             sqlDatabase = baseDB.getWritableDatabase();
             sqlDatabase.beginTransaction();
             SQLiteStatement stat = null;
-            PersonModel personModel = null;
-            for (BaseModel model : list) {
-                personModel = (PersonModel) model;
+            for (PersonModel personModel : list) {
                 ZLog.showLog("PersonSqlDao","insert", personModel.toString());
                 stat = sqlDatabase.compileStatement(insertSql);
                 stat.bindString(1, personModel.getTel());
@@ -71,10 +69,9 @@ public class PersonSqlDao implements BaseSqlDao {
         return isSuccess;
     }
 
-    @Override
-    public boolean insert(BaseModel model) {
-        ZLog.showLog("PersonSqlDao","insert", model.toString());
-        if(model == null || model.getKey() == null){
+    public boolean insert(PersonModel personModel) {
+        ZLog.showLog("PersonSqlDao","insert", personModel.toString());
+        if(personModel == null || personModel.getKey() == null){
             return false;
         }
         SQLiteDatabase sqlDatabase = null;
@@ -83,7 +80,6 @@ public class PersonSqlDao implements BaseSqlDao {
             sqlDatabase = baseDB.getWritableDatabase();
             sqlDatabase.beginTransaction();
             SQLiteStatement stat = null;
-            PersonModel personModel = (PersonModel) model;
                 stat = sqlDatabase.compileStatement(insertSql);
                 stat.bindString(1, personModel.getTel());
                 stat.bindString(2, personModel.getName());
@@ -105,11 +101,10 @@ public class PersonSqlDao implements BaseSqlDao {
         return isSuccess;
     }
 
-    @Override
-    public List<BaseModel> getAllData() {
+    public List<PersonModel> getAllData() {
         SQLiteDatabase sqlDatabase = baseDB.getWritableDatabase();
         Cursor cursor = sqlDatabase.rawQuery(selectSql,null);
-        List<BaseModel> baseModels = new ArrayList<>();
+        List<PersonModel> baseModels = new ArrayList<>();
         while (cursor.moveToNext()){
             PersonModel personModel = new PersonModel();
             personModel.setTel(cursor.getString(cursor.getColumnIndex(BaseDB.TEL_PERSON_COLUMN)));
@@ -127,12 +122,11 @@ public class PersonSqlDao implements BaseSqlDao {
         return baseModels;
     }
 
-    @Override
-    public List<BaseModel> getData(String[] conditions) {
+    public List<PersonModel> getData(String[] conditions) {
          if(conditions == null || conditions.length < 1){
              return getAllData();
          }
-        List<BaseModel> baseModels = new ArrayList<>();
+        List<PersonModel> baseModels = new ArrayList<>();
          StringBuffer selectStr = new StringBuffer(selectSql);
         selectStr.append(" ");
         for (int i = 0; i < conditions.length;i++) {
@@ -180,6 +174,37 @@ public class PersonSqlDao implements BaseSqlDao {
             ZLog.showLog("PersonSqlDao","getData", personModel.toString());
         }
         return personModel;
+    }
+
+    public boolean updateSelfInfo(PersonModel personModel){
+        ZLog.showLog("PersonSqlDao","updateSelfInfo", personModel.toString());
+        if(personModel == null || personModel.getKey() == null){
+            return false;
+        }
+        SQLiteDatabase sqlDatabase = null;
+        boolean isSuccess = true;
+        try {
+            sqlDatabase = baseDB.getWritableDatabase();
+            sqlDatabase.beginTransaction();
+
+            ContentValues cv = new ContentValues();
+            cv.put(BaseDB.TEL_PERSON_COLUMN,personModel.getTel());
+            cv.put(BaseDB.NAME_PERSON_COLUMN,personModel.getName());
+            if (personModel.getIcon() != null) {
+                cv.put(BaseDB.ICON_PERSON_COLUMN,Utils.bitmabToBytes(context, personModel.getIcon()));
+            }
+            sqlDatabase.update(BaseDB.PERSON_TABLE,cv,BaseDB.TYPE_PERSON_COLUMN + " = ?",new String[]{"1"});
+            sqlDatabase.setTransactionSuccessful();
+        }catch (SQLException e) {
+            isSuccess = false;
+            e.printStackTrace();
+        } finally {
+            // 结束
+            sqlDatabase.endTransaction();
+            sqlDatabase.close();
+        }
+        ZLog.showLog("PersonSqlDao","updateSelfInfo", isSuccess+"");
+        return isSuccess;
     }
 
 }

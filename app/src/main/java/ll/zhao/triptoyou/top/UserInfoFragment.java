@@ -1,7 +1,6 @@
 package ll.zhao.triptoyou.top;
 
 import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -40,6 +39,7 @@ public class UserInfoFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_user_info, container, false);
         userImage = rootView.findViewById(R.id.user_image);
+        userImage.setClipToOutline(true);
         userName =rootView.findViewById(R.id.user_name);
         userInfoViewModel = ViewModelProviders.of(getActivity()).get(UserInfoViewModel.class);
         userInfoViewModel.getUserInfo().observe(this, new Observer<PersonModel>() {

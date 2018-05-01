@@ -7,7 +7,7 @@ import android.graphics.BitmapFactory;
  * 人员信息
  * Created by Administrator on 2018/3/21.
  */
-public class Person extends BaseModel {
+public class PersonModel extends BaseModel {
     private String tel = "";
     private String name = "";
     private Bitmap icon = null;

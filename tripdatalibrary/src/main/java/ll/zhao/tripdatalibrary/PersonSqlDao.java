@@ -1,5 +1,6 @@
 package ll.zhao.tripdatalibrary;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -8,15 +9,14 @@ import android.database.sqlite.SQLiteStatement;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import ll.zhao.tripdatalibrary.model.BaseModel;
-import ll.zhao.tripdatalibrary.model.Person;
+import ll.zhao.tripdatalibrary.model.PersonModel;
 
 /**
  * Created by Administrator on 2018/3/21.
  */
-public class PersonSqlDao implements BaseSqlDao {
+public class PersonSqlDao{
 
     private BaseDB baseDB;
 
@@ -35,8 +35,7 @@ public class PersonSqlDao implements BaseSqlDao {
          baseDB = new BaseDB(context);
      }
 
-    @Override
-    public boolean insert(List<BaseModel> list) {
+    public boolean insert(List<PersonModel> list) {
         if(list == null || list.size() < 1){
             return true;
         }
@@ -46,16 +45,14 @@ public class PersonSqlDao implements BaseSqlDao {
             sqlDatabase = baseDB.getWritableDatabase();
             sqlDatabase.beginTransaction();
             SQLiteStatement stat = null;
-            Person person = null;
-            for (BaseModel model : list) {
-                person = (Person) model;
-                ZLog.showLog("PersonSqlDao","insert", person.toString());
+            for (PersonModel personModel : list) {
+                ZLog.showLog("PersonSqlDao","insert", personModel.toString());
                 stat = sqlDatabase.compileStatement(insertSql);
-                stat.bindString(1, person.getTel());
-                stat.bindString(2, person.getName());
-                stat.bindString(3, person.getType());
-                if (person.getIcon() != null) {
-                    stat.bindBlob(4, Utils.bitmabToBytes(context, person.getIcon()));
+                stat.bindString(1, personModel.getTel());
+                stat.bindString(2, personModel.getName());
+                stat.bindString(3, personModel.getType());
+                if (personModel.getIcon() != null) {
+                    stat.bindBlob(4, Utils.bitmabToBytes(context, personModel.getIcon()));
                 }
                 stat.executeInsert();
             }
@@ -72,10 +69,9 @@ public class PersonSqlDao implements BaseSqlDao {
         return isSuccess;
     }
 
-    @Override
-    public boolean insert(BaseModel model) {
-        ZLog.showLog("PersonSqlDao","insert", model.toString());
-        if(model == null || model.getKey() == null){
+    public boolean insert(PersonModel personModel) {
+        ZLog.showLog("PersonSqlDao","insert", personModel.toString());
+        if(personModel == null || personModel.getKey() == null){
             return false;
         }
         SQLiteDatabase sqlDatabase = null;
@@ -84,13 +80,12 @@ public class PersonSqlDao implements BaseSqlDao {
             sqlDatabase = baseDB.getWritableDatabase();
             sqlDatabase.beginTransaction();
             SQLiteStatement stat = null;
-            Person person = (Person) model;
                 stat = sqlDatabase.compileStatement(insertSql);
-                stat.bindString(1, person.getTel());
-                stat.bindString(2, person.getName());
-                stat.bindString(3, person.getType());
-                if (person.getIcon() != null) {
-                    stat.bindBlob(4, Utils.bitmabToBytes(context, person.getIcon()));
+                stat.bindString(1, personModel.getTel());
+                stat.bindString(2, personModel.getName());
+                stat.bindString(3, personModel.getType());
+                if (personModel.getIcon() != null) {
+                    stat.bindBlob(4, Utils.bitmabToBytes(context, personModel.getIcon()));
                 }
                 stat.executeInsert();
             sqlDatabase.setTransactionSuccessful();
@@ -106,34 +101,32 @@ public class PersonSqlDao implements BaseSqlDao {
         return isSuccess;
     }
 
-    @Override
-    public List<BaseModel> getAllData() {
+    public List<PersonModel> getAllData() {
         SQLiteDatabase sqlDatabase = baseDB.getWritableDatabase();
         Cursor cursor = sqlDatabase.rawQuery(selectSql,null);
-        List<BaseModel> baseModels = new ArrayList<>();
+        List<PersonModel> baseModels = new ArrayList<>();
         while (cursor.moveToNext()){
-            Person person = new Person();
-            person.setTel(cursor.getString(cursor.getColumnIndex(BaseDB.TEL_PERSON_COLUMN)));
-            person.setName(cursor.getString(cursor.getColumnIndex(BaseDB.NAME_PERSON_COLUMN)));
-            person.setType(cursor.getString(cursor.getColumnIndex(BaseDB.TYPE_PERSON_COLUMN)));
+            PersonModel personModel = new PersonModel();
+            personModel.setTel(cursor.getString(cursor.getColumnIndex(BaseDB.TEL_PERSON_COLUMN)));
+            personModel.setName(cursor.getString(cursor.getColumnIndex(BaseDB.NAME_PERSON_COLUMN)));
+            personModel.setType(cursor.getString(cursor.getColumnIndex(BaseDB.TYPE_PERSON_COLUMN)));
             byte[] icon = cursor.getBlob(cursor.getColumnIndex(BaseDB.ICON_PERSON_COLUMN));
             if(icon != null && icon.length > 0){
-                person.setIcon(icon);
+                personModel.setIcon(icon);
             }
-            ZLog.showLog("PersonSqlDao","getAllData", person.toString());
-            baseModels.add(person);
+            ZLog.showLog("PersonSqlDao","getAllData", personModel.toString());
+            baseModels.add(personModel);
         }
         ZLog.showLog("PersonSqlDao","getAllData",baseModels.size() + "");
         sqlDatabase.close();
         return baseModels;
     }
 
-    @Override
-    public List<BaseModel> getData(String[] conditions) {
+    public List<PersonModel> getData(String[] conditions) {
          if(conditions == null || conditions.length < 1){
              return getAllData();
          }
-        List<BaseModel> baseModels = new ArrayList<>();
+        List<PersonModel> baseModels = new ArrayList<>();
          StringBuffer selectStr = new StringBuffer(selectSql);
         selectStr.append(" ");
         for (int i = 0; i < conditions.length;i++) {
@@ -146,17 +139,72 @@ public class PersonSqlDao implements BaseSqlDao {
         SQLiteDatabase sqlDatabase = baseDB.getWritableDatabase();
         Cursor cursor = sqlDatabase.rawQuery(selectSql,null);
         while (cursor.moveToNext()){
-            Person person = new Person();
-            person.setTel(cursor.getString(cursor.getColumnIndex(BaseDB.TEL_PERSON_COLUMN)));
-            person.setName(cursor.getString(cursor.getColumnIndex(BaseDB.NAME_PERSON_COLUMN)));
-            person.setType(cursor.getString(cursor.getColumnIndex(BaseDB.TYPE_PERSON_COLUMN)));
+            PersonModel personModel = new PersonModel();
+            personModel.setTel(cursor.getString(cursor.getColumnIndex(BaseDB.TEL_PERSON_COLUMN)));
+            personModel.setName(cursor.getString(cursor.getColumnIndex(BaseDB.NAME_PERSON_COLUMN)));
+            personModel.setType(cursor.getString(cursor.getColumnIndex(BaseDB.TYPE_PERSON_COLUMN)));
             byte[] icon = cursor.getBlob(cursor.getColumnIndex(BaseDB.ICON_PERSON_COLUMN));
             if(icon != null && icon.length > 0){
-                person.setIcon(icon);
+                personModel.setIcon(icon);
             }
-            ZLog.showLog("PersonSqlDao","getData", person.toString());
-            baseModels.add(person);
+            ZLog.showLog("PersonSqlDao","getData", personModel.toString());
+            baseModels.add(personModel);
         }
         return baseModels;
     }
+
+    public PersonModel getSelfData() {
+
+        StringBuffer selectStr = new StringBuffer(selectSql);
+        selectStr.append(" ");
+                selectStr.append(BaseDB.TYPE_PERSON_COLUMN);
+                selectStr.append("='1'");
+        ZLog.showLog("PersonSqlDao","getData", selectStr.toString());
+        SQLiteDatabase sqlDatabase = baseDB.getWritableDatabase();
+        Cursor cursor = sqlDatabase.rawQuery(selectSql,null);
+        PersonModel personModel = new PersonModel();
+        while (cursor.moveToNext()){
+            personModel.setTel(cursor.getString(cursor.getColumnIndex(BaseDB.TEL_PERSON_COLUMN)));
+            personModel.setName(cursor.getString(cursor.getColumnIndex(BaseDB.NAME_PERSON_COLUMN)));
+            personModel.setType(cursor.getString(cursor.getColumnIndex(BaseDB.TYPE_PERSON_COLUMN)));
+            byte[] icon = cursor.getBlob(cursor.getColumnIndex(BaseDB.ICON_PERSON_COLUMN));
+            if(icon != null && icon.length > 0){
+                personModel.setIcon(icon);
+            }
+            ZLog.showLog("PersonSqlDao","getData", personModel.toString());
+        }
+        return personModel;
+    }
+
+    public boolean updateSelfInfo(PersonModel personModel){
+        ZLog.showLog("PersonSqlDao","updateSelfInfo", personModel.toString());
+        if(personModel == null || personModel.getKey() == null){
+            return false;
+        }
+        SQLiteDatabase sqlDatabase = null;
+        boolean isSuccess = true;
+        try {
+            sqlDatabase = baseDB.getWritableDatabase();
+            sqlDatabase.beginTransaction();
+
+            ContentValues cv = new ContentValues();
+            cv.put(BaseDB.TEL_PERSON_COLUMN,personModel.getTel());
+            cv.put(BaseDB.NAME_PERSON_COLUMN,personModel.getName());
+            if (personModel.getIcon() != null) {
+                cv.put(BaseDB.ICON_PERSON_COLUMN,Utils.bitmabToBytes(context, personModel.getIcon()));
+            }
+            sqlDatabase.update(BaseDB.PERSON_TABLE,cv,BaseDB.TYPE_PERSON_COLUMN + " = ?",new String[]{"1"});
+            sqlDatabase.setTransactionSuccessful();
+        }catch (SQLException e) {
+            isSuccess = false;
+            e.printStackTrace();
+        } finally {
+            // 结束
+            sqlDatabase.endTransaction();
+            sqlDatabase.close();
+        }
+        ZLog.showLog("PersonSqlDao","updateSelfInfo", isSuccess+"");
+        return isSuccess;
+    }
+
 }

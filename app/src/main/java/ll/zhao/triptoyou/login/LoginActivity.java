@@ -1,16 +1,10 @@
 package ll.zhao.triptoyou.login;
 
-import android.app.AlertDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.support.constraint.ConstraintLayout;
 import android.text.Editable;
-import android.util.Log;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -21,10 +15,9 @@ import com.andrognito.patternlockview.utils.PatternLockUtils;
 import java.util.List;
 
 import ll.zhao.tripdatalibrary.PersonSqlDao;
-import ll.zhao.tripdatalibrary.model.Person;
+import ll.zhao.tripdatalibrary.model.PersonModel;
 import ll.zhao.triptoyou.BaseActivity;
 import ll.zhao.triptoyou.HLLog;
-import ll.zhao.triptoyou.MainActivity;
 import ll.zhao.triptoyou.R;
 import ll.zhao.triptoyou.Utils;
 import ll.zhao.triptoyou.custom.HLLAlert;
@@ -54,17 +47,7 @@ public class LoginActivity extends BaseActivity {
         patternGuide = findViewById(R.id.pattern_guide);
         patternRedo = findViewById(R.id.pattern_retry);
         patternRedo.setVisibility(View.GONE);
-        patternRedo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-               isFirstPattern = true;
-               patternFirst = "";
-               patternLockView.clearPattern();
-               patternGuide.setTextColor(getColor(R.color.white));
-               patternGuide.setText(getString(R.string.login_pattern_guide_first));
-                patternRedo.setVisibility(View.GONE);
-            }
-        });
+        patternRedo.setOnClickListener(this);
 
         patternLockView.addPatternLockListener(new PatternLockViewListener() {
             @Override
@@ -131,13 +114,13 @@ public class LoginActivity extends BaseActivity {
         String tel = telEdit.getText().toString();
         PersonSqlDao personSqlDao = new PersonSqlDao(this);
 
-        Person person = new Person();
-        person.setTel(tel);
-        person.setName(name);
-        person.setType("1");
+        PersonModel personModel = new PersonModel();
+        personModel.setTel(tel);
+        personModel.setName(name);
+        personModel.setType("1");
         //TODO:画像还未处理
-        person.setIcon(BitmapFactory.decodeResource(getResources(),R.mipmap.ic_launcher));
-        boolean result = personSqlDao.insert(person);
+        personModel.setIcon(BitmapFactory.decodeResource(getResources(),R.mipmap.ic_launcher));
+        boolean result = personSqlDao.insert(personModel);
         if(!result){
             HLLAlert.showAlert(LoginActivity.this,R.string.login_error_message1);
             isFirstPattern = true;
@@ -149,6 +132,26 @@ public class LoginActivity extends BaseActivity {
         }else{
             Intent intent = new Intent(LoginActivity.this, TopActivity.class);
             startActivity(intent);
+            Utils.saveDateToShare(this,Utils.LOGIN_FLAG,"1");
+        }
+    }
+
+    @Override
+    protected void baseOnClick(View v) {
+        if(clickIsDone) {
+            super.baseOnClick(v);
+            clickIsDone = false;
+            switch (v.getId()) {
+                case R.id.pattern_retry:
+                    isFirstPattern = true;
+                    patternFirst = "";
+                    patternLockView.clearPattern();
+                    patternGuide.setTextColor(getColor(R.color.white));
+                    patternGuide.setText(getString(R.string.login_pattern_guide_first));
+                    patternRedo.setVisibility(View.GONE);
+                    break;
+            }
+            clickIsDone = true;
         }
     }
 }

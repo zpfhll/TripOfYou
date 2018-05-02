@@ -30,4 +30,8 @@ public class BaseActivity extends FragmentActivity implements View.OnClickListen
     }
 
     protected void  baseOnClick(View v){}
+
+    protected void closeActivity(){
+        finish();
+    }
 }

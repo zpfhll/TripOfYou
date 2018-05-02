@@ -37,4 +37,7 @@
     <string name="top_modify_info_title_tel">电话</string>
     <string name="top_modify_info_error_message">请输入新的姓名和电话号，或者更新头像！</string>
 
+    <!-- contacts -->
+    <string name="contacts_title">通讯录</string>
+    <string name="contacts_delete">删除</string>
 </resources>

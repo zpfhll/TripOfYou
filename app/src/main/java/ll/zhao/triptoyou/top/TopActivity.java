@@ -31,6 +31,7 @@ import ll.zhao.tripdatalibrary.model.TripModel;
 import ll.zhao.triptoyou.BaseActivity;
 import ll.zhao.triptoyou.R;
 import ll.zhao.triptoyou.Utils;
+import ll.zhao.triptoyou.contacts.ContactsActivity;
 import ll.zhao.triptoyou.custom.HLLButton;
 import ll.zhao.triptoyou.map.MapActivity;
 import ll.zhao.triptoyou.model.UserInfoViewModel;
@@ -92,6 +93,7 @@ public class TopActivity extends BaseActivity{
         menuBtn = findViewById(R.id.menu_button);
         menuBtn.setOnClickListener(this);
         persons = findViewById(R.id.persons);
+        persons.setOnClickListener(this);
         addTrip = findViewById(R.id.add_trip);
         history = findViewById(R.id.history);
         mapBtn = findViewById(R.id.map_button);
@@ -256,6 +258,10 @@ public class TopActivity extends BaseActivity{
                     UserInfoModifyFragment userInfoFragment = UserInfoModifyFragment.newInstance(personModel);
                     addFragement(userInfoFragment,R.id.user_info_modify);
                     menuUserInfoModifyView.setVisibility(View.VISIBLE);
+                    break;
+                case R.id.persons:
+Intent intent1 = new Intent(TopActivity.this, ContactsActivity.class);
+startActivity(intent1);
                     break;
                 default:
                     break;

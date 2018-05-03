@@ -50,6 +50,8 @@ dependencies {
 
     compile 'com.facebook.rebound:rebound:0.3.8'
 
+
+
     //map
     compile 'com.amap.api:map2d:latest.integration'
     compile 'com.amap.api:navi-3dmap:latest.integration'

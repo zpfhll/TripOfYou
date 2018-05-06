@@ -4,12 +4,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/contacts_item_background"
     android:layout_width="match_parent"
-    android:layout_height="70dp">
+    android:layout_height="65dp">
 
-    <Button
+    <ll.zhao.triptoyou.custom.HLLButton
         android:id="@+id/contacts_delete"
         android:layout_width="80dp"
-        android:layout_height="70dp"
+        android:layout_height="65dp"
         android:layout_marginEnd="0dp"
         android:background="@color/red"
         android:text="@string/delete"
@@ -24,8 +24,8 @@
         android:background="@color/white">
         <ll.zhao.triptoyou.custom.HLLButton
             android:id="@+id/delete_contact_btn"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:layout_marginStart="16dp"
             android:background="@mipmap/delete_contact"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -34,8 +34,8 @@
 
         <ImageView
             android:id="@+id/contacts_icon"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_marginStart="16dp"
             android:background="@drawable/button_shape_white"
             android:src="@mipmap/ic_launcher"
@@ -46,11 +46,11 @@
         <TextView
             android:id="@+id/contacts_name"
             android:layout_width="0dp"
-            android:layout_height="35dp"
+            android:layout_height="20dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="3dp"
+            android:layout_marginTop="14dp"
             android:text="12345"
-            android:textSize="20dp"
+            android:textSize="15dp"
             android:textStyle="bold"
             android:gravity="center_vertical"
             app:layout_constraintEnd_toEndOf="parent"
@@ -60,12 +60,12 @@
         <TextView
             android:id="@+id/contacts_tel"
             android:layout_width="0dp"
-            android:layout_height="25dp"
-            android:layout_marginBottom="3dp"
+            android:layout_height="15dp"
+            android:layout_marginBottom="14dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="2dp"
             android:text="12345"
-            android:textSize="15dp"
+            android:textSize="12dp"
             android:gravity="center_vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

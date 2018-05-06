@@ -32,7 +32,11 @@ public class ContasctsAdater extends RecyclerView.Adapter<ContasctsAdater.ViewHo
     public static boolean isShowingDelete;
     public static ViewHolder showHolder;
 
-    public static boolean isEditing;
+    private boolean isEditing;
+
+    private ContactsListener listener;
+
+
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
@@ -44,6 +48,8 @@ public class ContasctsAdater extends RecyclerView.Adapter<ContasctsAdater.ViewHo
         public ConstraintLayout contactItem;
         public SpringSystem springSystem;
         public Spring showSpring;
+        public HLLButton deleteContact;
+        public int position;
 
         public Context context;
 
@@ -54,13 +60,13 @@ public class ContasctsAdater extends RecyclerView.Adapter<ContasctsAdater.ViewHo
             contactName = itemView.findViewById(R.id.contacts_name);
             contactTel = itemView.findViewById(R.id.contacts_tel);
             contactIcon = itemView.findViewById(R.id.contacts_icon);
+            deleteContact = itemView.findViewById(R.id.contacts_delete);
             springSystem = SpringSystem.create();
             showSpring = springSystem.createSpring();
             showSpring.addListener(new SpringListener() {
                 @Override
                 public void onSpringUpdate(Spring spring) {
                     double currentValue = spring.getCurrentValue();
-                    Log.i("--->",currentValue+"");
                     float distance = (float)( Utils.dp2pxS(context,80) * currentValue);
                     contactItem.setTranslationX(-distance);
                 }
@@ -128,8 +134,17 @@ public class ContasctsAdater extends RecyclerView.Adapter<ContasctsAdater.ViewHo
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         holder.contactName.setText(datas.get(position));
+        holder.position = position;
         holder.delete.setTag(holder);
-        if(isShowingDelete){
+        holder.deleteContact.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(listener != null){
+                    listener.deleteContact(showHolder.position);
+                }
+            }
+        });
+        if(isShowingDelete && showHolder != null){
             isShowingDelete = false;
             showHolder.showSpring.setCurrentValue(1);
             showHolder.showSpring.setEndValue(0);
@@ -146,84 +161,17 @@ public class ContasctsAdater extends RecyclerView.Adapter<ContasctsAdater.ViewHo
     public int getItemCount() {
         return datas.size();
     }
-//
-//
-//    @Override
-//    public int getCount() {
-//        return datas.size();
-//    }
-//
-//    @Override
-//    public String getItem(int position) {
-//        return datas.get(position);
-//    }
-//
-//    @Override
-//    public long getItemId(int position) {
-//        return position;
-//    }
-//
-//    @Override
-//    public View getView(int position, View convertView, ViewGroup parent) {
-//        final ViewHolder holder;
-//        if (convertView == null) {
-//            convertView = mInflater.inflate(R.layout.contacts_item, null);
-//            holder = new ViewHolder();
-//                /*得到各个控件的对象*/
-//            holder.delete = convertView.findViewById(R.id.delete_contact_btn); // to ItemButton
-//            holder.contactItem = convertView.findViewById(R.id.contacts_item);
-//            holder.contactName = convertView.findViewById(R.id.contacts_name);
-//            holder.contactTel = convertView.findViewById(R.id.contacts_tel);
-//            holder.contactIcon = convertView.findViewById(R.id.contacts_icon);
-//
-//            holder.springSystem = SpringSystem.create();
-//            holder.showMenuSpring = holder.springSystem.createSpring();
-//            holder.showMenuSpring.addListener(new SpringListener() {
-//                @Override
-//                public void onSpringUpdate(Spring spring) {
-//                    double currentValue = spring.getCurrentValue();
-//                    Log.i("--->",currentValue+"");
-//                    float distance = (float)( Utils.dp2pxS(context,80) * currentValue);
-//                    holder.contactItem.setTranslationX(-distance);
-//                }
-//                @Override
-//                public void onSpringAtRest(Spring spring) {
-//
-//                }
-//
-//                @Override
-//                public void onSpringActivate(Spring spring) {
-//
-//                }
-//
-//                @Override
-//                public void onSpringEndStateChange(Spring spring) {
-//                }
-//            });
-//
-//            convertView.setTag(holder); //绑定ViewHolder对象
-//        }
-//        else {
-//            holder = (ViewHolder) convertView.getTag(); //取出ViewHolder对象
-//        }
-//        holder.contactName.setText(datas.get(position));
-//        holder.delete.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if(!isShowingDelete){
-//                    holder.showMenuSpring.setEndValue(1);
-//                    isShowingDelete = true;
-//                }else{
-//                    isShowingDelete = false;
-//                    holder.showMenuSpring.setCurrentValue(1);
-//                    holder.showMenuSpring.setEndValue(0);
-//                }
-//            }
-//        });
-//
-//        return convertView;
-//    }
-//
-//    /*存放控件 的ViewHolder*/
+
+    public void setEditing(boolean editing) {
+        isEditing = editing;
+    }
+
+    public ContactsListener getListener() {
+        return listener;
+    }
+
+    public void setListener(ContactsListener listener) {
+        this.listener = listener;
+    }
 
 }

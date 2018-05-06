@@ -157,11 +157,18 @@ public class UserInfoModifyFragment extends Fragment implements View.OnClickList
                 chanedImage = null;
                 File scropfile = new File(getActivity().getExternalCacheDir(), "crop_image.png");
                 chanedImage = BitmapFactory.decodeFile(scropfile.getPath());
+
                 if(chanedImage != null){
                     userImage.setImageBitmap(chanedImage);
                     File deletefile = new File(getActivity().getExternalCacheDir(), "crop_image.png");
                     if (deletefile.exists()) {
                         deletefile.delete();
+                    }
+                }else{
+                    Uri imageUri = data.getData();
+                    chanedImage = BitmapFactory.decodeFile(imageUri.getPath());
+                    if(chanedImage != null) {
+                        userImage.setImageBitmap(chanedImage);
                     }
                 }
                 break;

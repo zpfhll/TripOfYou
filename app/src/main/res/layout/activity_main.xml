@@ -7,12 +7,12 @@
     android:orientation="vertical"
     tools:context="ll.zhao.triptoyou.MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <Button
+        android:layout_width="150dp"
+        android:layout_height="70dp"
+        android:singleLine="true"
+        android:text="start"
         android:onClick="click"
-        android:clickable="true"
-        android:textSize="40sp"
-        android:text="Hello World!" />
+        android:gravity="center"/>
 
 </LinearLayout>

@@ -55,7 +55,7 @@
 
 
     <ll.zhao.triptoyou.custom.HLLButton
-        android:id="@+id/close_modify"
+        android:id="@+id/back_btn"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginStart="8dp"
@@ -75,6 +75,31 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/view2">
     </android.support.v7.widget.RecyclerView>
+
+    <TextView
+        android:id="@+id/nodata_info"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:text="@string/contacts_nodata"
+        android:gravity="center"
+        android:textSize="15dp"
+        android:textColor="@color/gray"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/view2"
+        android:visibility="gone"/>
+
+    <ll.zhao.triptoyou.custom.HLLButton
+        android:id="@+id/add_contact_button"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="24dp"
+        android:layout_marginEnd="24dp"
+        android:background="@mipmap/add"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 
 </android.support.constraint.ConstraintLayout>

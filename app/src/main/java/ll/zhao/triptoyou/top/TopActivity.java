@@ -260,8 +260,8 @@ public class TopActivity extends BaseActivity{
                     menuUserInfoModifyView.setVisibility(View.VISIBLE);
                     break;
                 case R.id.persons:
-Intent intent1 = new Intent(TopActivity.this, ContactsActivity.class);
-startActivity(intent1);
+                    Intent intent1 = new Intent(TopActivity.this, ContactsActivity.class);
+                    startActivity(intent1);
                     break;
                 default:
                     break;

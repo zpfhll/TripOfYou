@@ -40,5 +40,6 @@
 
     <!-- contacts -->
     <string name="contacts_title">通讯录</string>
+    <string name="contacts_nodata">请添加一起同行的小伙伴吧！</string>
 
 </resources>

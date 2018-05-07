@@ -139,6 +139,7 @@ public class ContactsActivity extends BaseActivity implements ContactsListener{
 //            ContasctsAdater.showHolder.showSpring.setEndValue(0);
 //        }
         ContasctsAdater.showHolder = null;
+        ContasctsAdater.isShowingDelete = false;
         HLLog.showLog("ContactsActivity","deleteContact",""+position);
         adapter.notifyItemRemoved(position);
         datas.remove(position);

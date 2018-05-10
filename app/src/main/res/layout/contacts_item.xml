@@ -6,41 +6,21 @@
     android:layout_width="match_parent"
     android:layout_height="65dp">
 
-    <ll.zhao.triptoyou.custom.HLLButton
-        android:id="@+id/contacts_delete"
-        android:layout_width="80dp"
-        android:layout_height="65dp"
-        android:layout_marginEnd="0dp"
-        android:background="@color/red"
-        android:text="@string/delete"
-        android:textColor="@color/white"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent" />
-
     <android.support.constraint.ConstraintLayout
         android:id="@+id/contacts_item"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white">
-        <ll.zhao.triptoyou.custom.HLLButton
-            android:id="@+id/delete_contact_btn"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_marginStart="16dp"
-            android:background="@mipmap/delete_contact"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/contacts_icon"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="24dp"
             android:background="@drawable/button_shape_white"
             android:src="@mipmap/ic_launcher"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/delete_contact_btn"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView

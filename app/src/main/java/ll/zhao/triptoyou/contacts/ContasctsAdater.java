@@ -18,6 +18,7 @@ import com.facebook.rebound.SpringSystem;
 
 import java.util.List;
 
+import ll.zhao.tripdatalibrary.model.PersonModel;
 import ll.zhao.triptoyou.R;
 import ll.zhao.triptoyou.Utils;
 import ll.zhao.triptoyou.custom.HLLButton;
@@ -26,15 +27,49 @@ import ll.zhao.triptoyou.custom.HLLButton;
  * Created by Administrator on 2018/5/3.
  */
 
-public class ContasctsAdater extends RecyclerView.Adapter<ContasctsAdater.ViewHolder> {
+public class ContasctsAdater extends BaseAdapter{
 
-    private List<String> datas;
+    private List<PersonModel> datas;
     public static boolean isShowingDelete;
     public static ViewHolder showHolder;
 
     private boolean isEditing;
 
+    private Context context;
+
     private ContactsListener listener;
+
+    @Override
+    public int getCount() {
+        return datas.size();
+    }
+
+    @Override
+    public PersonModel getItem(int position) {
+        return datas.get(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        ViewHolder holder;
+        if(convertView == null){
+            convertView = LayoutInflater.from(context)
+                    .inflate(R.layout.contacts_item, parent, false);
+            holder = new ViewHolder(convertView);
+            convertView.setTag(holder);
+        }else{
+            holder = (ViewHolder) convertView.getTag();
+        }
+        holder.contactName.setText(datas.get(position).getName());
+        holder.contactTel.setText(datas.get(position).getTel());
+        holder.contactIcon.setImageBitmap(datas.get(position).getIcon());
+        return convertView;
+    }
 
 
     // Provide a reference to the views for each data item
@@ -43,131 +78,24 @@ public class ContasctsAdater extends RecyclerView.Adapter<ContasctsAdater.ViewHo
     static class ViewHolder extends RecyclerView.ViewHolder  {
         public TextView contactName;
         public TextView contactTel;
-        public HLLButton delete;
         public ImageView contactIcon;
-        public ConstraintLayout contactItem;
-        public SpringSystem springSystem;
-        public Spring showSpring;
-        public HLLButton deleteContact;
-        public int position;
-
-        public Context context;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            delete = itemView.findViewById(R.id.delete_contact_btn); // to ItemButton
-            contactItem = itemView.findViewById(R.id.contacts_item);
             contactName = itemView.findViewById(R.id.contacts_name);
             contactTel = itemView.findViewById(R.id.contacts_tel);
             contactIcon = itemView.findViewById(R.id.contacts_icon);
-            deleteContact = itemView.findViewById(R.id.contacts_delete);
-            springSystem = SpringSystem.create();
-            showSpring = springSystem.createSpring();
-            showSpring.addListener(new SpringListener() {
-                @Override
-                public void onSpringUpdate(Spring spring) {
-                    double currentValue = spring.getCurrentValue();
-                    float distance = (float)( Utils.dp2pxS(context,80) * currentValue);
-                    contactItem.setTranslationX(-distance);
-                }
-                @Override
-                public void onSpringAtRest(Spring spring) {
-
-                }
-
-                @Override
-                public void onSpringActivate(Spring spring) {
-
-                }
-
-                @Override
-                public void onSpringEndStateChange(Spring spring) {
-                }
-            });
-            delete.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(!isShowingDelete){
-                        showHolder = (ViewHolder) v.getTag();
-                        showHolder.showSpring.setEndValue(1);
-                        isShowingDelete = true;
-                    }else{
-                        isShowingDelete = false;
-                        showHolder.showSpring.setCurrentValue(1);
-                        showHolder.showSpring.setEndValue(0);
-                    }
-                }
-            });
-            contactItem.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(isShowingDelete){
-                        isShowingDelete = false;
-                        showHolder.showSpring.setCurrentValue(1);
-                        showHolder.showSpring.setEndValue(0);
-                    }
-                }
-            });
-
         }
 
     }
     // Provide a suitable constructor (depends on the kind of dataset)
-    public ContasctsAdater(List<String> datas){
+    public ContasctsAdater(List<PersonModel> datas,Context context){
         this.datas = datas;
-    }
-
-    // Create new views (invoked by the layout manager)
-    @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        // create a new view
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.contacts_item, parent, false);
-        ViewHolder holder = new ViewHolder(view);
-        holder.context = parent.getContext();
-        return holder;
-    }
-
-    // Replace the contents of a view (invoked by the layout manager)
-    @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        // - get element from your dataset at this position
-        // - replace the contents of the view with that element
-        holder.contactName.setText(datas.get(position));
-        holder.position = position;
-        holder.delete.setTag(holder);
-        holder.deleteContact.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(listener != null){
-                    listener.deleteContact(showHolder.position);
-                }
-            }
-        });
-        if(isShowingDelete && showHolder != null){
-            isShowingDelete = false;
-            showHolder.showSpring.setCurrentValue(1);
-            showHolder.showSpring.setEndValue(0);
-        }
-        if(!isEditing){
-            holder.delete.setVisibility(View.GONE);
-        }else{
-            holder.delete.setVisibility(View.VISIBLE);
-        }
-    }
-
-    // Return the size of your dataset (invoked by the layout manager)
-    @Override
-    public int getItemCount() {
-        return datas.size();
+        this.context = context;
     }
 
     public void setEditing(boolean editing) {
         isEditing = editing;
-    }
-
-    public ContactsListener getListener() {
-        return listener;
     }
 
     public void setListener(ContactsListener listener) {

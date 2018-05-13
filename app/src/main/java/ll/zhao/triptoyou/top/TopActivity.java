@@ -254,6 +254,11 @@ public class TopActivity extends BaseActivity{
                     }
                     break;
                 case R.id.menu_user_info:
+                    if(menuIsShowing) {
+                        menuIsShowing = false;
+                        showMenuSpring.setCurrentValue(1);
+                        showMenuSpring.setEndValue(0);
+                    }
                     PersonModel personModel = personSqlDao.getSelfData();
                     UserInfoModifyFragment userInfoFragment = UserInfoModifyFragment.newInstance(personModel);
                     addFragement(userInfoFragment,R.id.user_info_modify);

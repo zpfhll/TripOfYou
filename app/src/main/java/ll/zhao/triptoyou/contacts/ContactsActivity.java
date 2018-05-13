@@ -18,24 +18,33 @@ import ll.zhao.triptoyou.HLLog;
 import ll.zhao.triptoyou.R;
 import ll.zhao.triptoyou.custom.HLLButton;
 
-public class ContactsActivity extends BaseActivity implements ContactsListener{
+public class ContactsActivity extends BaseActivity{
     private ListView listView;
-    private ContasctsAdater adapter;
+    private ContactsAdapter adapter;
 
     private HLLButton addBtn;
     private HLLButton backBtn;
-    private TextView nodataInfo;
+    private TextView noDataInfo;
 
     private  List<PersonModel> datas;
-    private FrameLayout contactDetailFragment;
+    private FrameLayout contactDetailFragmentLayout;
+    private View contactDetailBackground;
+    private ContactDetailFragment contactDetailFragment;
+
+    public ContactsActivity() {
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contacts);
 
         listView = findViewById(R.id.sort_listview);
-        contactDetailFragment = findViewById(R.id.contact_detail_fragment);
-        nodataInfo = findViewById(R.id.nodata_info);
+        contactDetailFragmentLayout = findViewById(R.id.contact_detail_fragment);
+        contactDetailBackground = findViewById(R.id.contact_detail_background);
+        contactDetailFragmentLayout.setVisibility(View.GONE);
+        contactDetailBackground.setVisibility(View.GONE);
+        noDataInfo = findViewById(R.id.nodata_info);
         backBtn = findViewById(R.id.back_btn);
         backBtn.setOnClickListener(this);
         addBtn = findViewById(R.id.add_contact_button);
@@ -51,24 +60,29 @@ public class ContactsActivity extends BaseActivity implements ContactsListener{
         }
 
         if(datas.size() < 1){
-            nodataInfo.setVisibility(View.VISIBLE);
+            noDataInfo.setVisibility(View.VISIBLE);
         }else{
-            nodataInfo.setVisibility(View.GONE);
+            noDataInfo.setVisibility(View.GONE);
         }
 
-        adapter = new ContasctsAdater(datas,this);
+        adapter = new ContactsAdapter(datas,this);
         listView.setAdapter(adapter);
-        adapter.setListener(this);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ContactDetailFragment userInfoFragment = ContactDetailFragment.newInstance(datas.get(position));
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.contact_detail_fragment,userInfoFragment);
-                transaction.addToBackStack(null);
-                transaction.commit();
-                contactDetailFragment.setVisibility(View.VISIBLE);
+                if(contactDetailFragment == null){
+                    contactDetailFragment = ContactDetailFragment.newInstance(datas.get(position),position);
+                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.contact_detail_fragment,contactDetailFragment);
+                    transaction.addToBackStack(null);
+                    transaction.commit();
+                }else{
+                    contactDetailFragment.refreshView(datas.get(position),position);
+                }
+
+                contactDetailFragmentLayout.setVisibility(View.VISIBLE);
+                contactDetailBackground.setVisibility(View.VISIBLE);
             }
         });
 
@@ -90,15 +104,23 @@ public class ContactsActivity extends BaseActivity implements ContactsListener{
         clickIsDone = true;
     }
 
-    @Override
     public void deleteContact(int position) {
         HLLog.showLog("ContactsActivity","deleteContact",""+position);
         datas.remove(position);
         adapter.notifyDataSetChanged();
         if(datas.size() < 1){
-            nodataInfo.setVisibility(View.VISIBLE);
+            noDataInfo.setVisibility(View.VISIBLE);
         }else{
-            nodataInfo.setVisibility(View.GONE);
+            noDataInfo.setVisibility(View.GONE);
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        contactDetailFragmentLayout.setVisibility(View.GONE);
+        contactDetailBackground.setVisibility(View.GONE);
+    }
+
+
+
 }

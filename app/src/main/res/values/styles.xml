@@ -1,10 +1,15 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="android:Theme.Light.NoTitleBar">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- 隐藏Activity窗口的ActionBar -->
+        <item name="windowActionBar">false</item>
+        <!-- 隐藏Activity窗口的Title标题栏 -->
+        <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="AlertDialog" parent="@android:style/Theme.DeviceDefault.Dialog.Alert">
-        <item name="android:background">@color/deep_gray</item>
+    <style name="AlertDialog" parent="AlertDialog.AppCompat.Light">
+        <item name="android:background">@color/white</item>
+        <item name="android:textColor">@color/deep_gray</item>
     </style>
 </resources>

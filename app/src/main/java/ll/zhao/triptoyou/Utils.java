@@ -1,8 +1,13 @@
 package ll.zhao.triptoyou;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.Build;
+import android.provider.MediaStore;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
 import android.util.Base64;
@@ -10,6 +15,8 @@ import android.util.Log;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.security.KeyPairGenerator;
 import java.security.KeyStore;
 import java.security.PrivateKey;
@@ -36,6 +43,9 @@ public class Utils {
     public static final String LOGIN_FLAG = "loginflg";
     //ログイン完了の値
     public static final String LOGIN_DONE = "1";
+
+    public static final int IMAGE_CODE = 1;
+    public static final int CROP_CODE = 2;
 
     public static int px2dp(Context context, float pxValue) {
         final float scale = context.getResources().getDisplayMetrics().density / 2;
@@ -397,6 +407,41 @@ public class Utils {
     public static String getDateFromShare(Context context,String key){
         SharedPreferences dataStore = context.getSharedPreferences("TripStore", MODE_PRIVATE);
         return dataStore.getString(key,"");
+    }
+
+
+    public static void cropImage(Intent data, Activity activity){
+        if(data == null || data.getData() == null){
+            return;
+        }
+        Uri selectedImageUri = data.getData();
+        File file = new File(activity.getExternalCacheDir(), "crop_image.png");
+        try {
+            if (file.exists()) {
+                file.delete();
+            }
+            file.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Uri outputUri = Uri.fromFile(file);
+        Intent intent = new Intent("com.android.camera.action.CROP");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        }
+        intent.setDataAndType(selectedImageUri, "image/*");
+        intent.putExtra("crop", "true");
+        intent.putExtra("aspectX", 1);
+        intent.putExtra("aspectY", 1);
+        intent.putExtra("outputX", Utils.dp2pxS(activity,70));
+        intent.putExtra("outputY",  Utils.dp2pxS(activity,70));
+        intent.putExtra("scale", true);
+        //将剪切的图片保存到目标Uri中
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, outputUri);
+        intent.putExtra("return-data", false);
+        intent.putExtra("outputFormat", Bitmap.CompressFormat.PNG.toString());
+        intent.putExtra("noFaceDetection", true);
+        activity.startActivityForResult(intent, CROP_CODE);
     }
 
 }

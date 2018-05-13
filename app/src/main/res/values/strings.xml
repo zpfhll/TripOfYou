@@ -5,6 +5,8 @@
     <string name="close">关闭</string>
     <string name="done">完成</string>
     <string name="delete">删除</string>
+    <string name="ok">OK</string>
+    <string name="undo">取消</string>
     <string name="save">保存</string>
 
     <!-- Login -->
@@ -27,5 +29,6 @@
     <!-- contacts -->
     <string name="contacts_title">通讯录</string>
     <string name="contacts_nodata">请添加一起同行的小伙伴吧！</string>
+    <string name="contacts_delete_notice">确定要从联系人中删除[%s]吗？</string>
 
 </resources>

@@ -11,7 +11,7 @@ public class PersonModel extends BaseModel {
     private String tel = "";
     private String name = "";
     private Bitmap icon = null;
-    private String type = "1";
+    private String type = "0";
 
     public String getKey(){
         return tel;

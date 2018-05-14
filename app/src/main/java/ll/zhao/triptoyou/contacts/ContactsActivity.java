@@ -2,6 +2,7 @@ package ll.zhao.triptoyou.contacts;
 
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.widget.AdapterView;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import ll.zhao.tripdatalibrary.PersonSqlDao;
 import ll.zhao.tripdatalibrary.model.PersonModel;
 import ll.zhao.triptoyou.BaseActivity;
 import ll.zhao.triptoyou.HLLog;
@@ -30,6 +32,8 @@ public class ContactsActivity extends BaseActivity{
     private FrameLayout contactDetailFragmentLayout;
     private View contactDetailBackground;
     private ContactDetailFragment contactDetailFragment;
+
+    private Runnable refreshRunnable;
 
     public ContactsActivity() {
     }
@@ -50,14 +54,6 @@ public class ContactsActivity extends BaseActivity{
         addBtn = findViewById(R.id.add_contact_button);
         addBtn.setOnClickListener(this);
         datas = new ArrayList<>();
-
-        for (int i = 0; i <10; i++) {
-            PersonModel model = new PersonModel();
-            model.setName("user"+i);
-            model.setTel("182297756"+i);
-            model.setIcon(BitmapFactory.decodeResource(getResources(),R.mipmap.home));
-            datas.add(model);
-        }
 
         if(datas.size() < 1){
             noDataInfo.setVisibility(View.VISIBLE);
@@ -86,6 +82,22 @@ public class ContactsActivity extends BaseActivity{
             }
         });
 
+        refreshRunnable = new Runnable() {
+            @Override
+            public void run() {
+                PersonSqlDao personSqlDao = new PersonSqlDao(getBaseContext());
+                datas.clear();
+                datas.addAll(personSqlDao.getAllData());
+                if(datas.size() < 1){
+                    noDataInfo.setVisibility(View.VISIBLE);
+                }else{
+                    noDataInfo.setVisibility(View.GONE);
+                    adapter.notifyDataSetChanged();
+                }
+            }
+        };
+
+        new Handler(getMainLooper()).post(refreshRunnable);
     }
 
     @Override
@@ -98,6 +110,17 @@ public class ContactsActivity extends BaseActivity{
                     closeActivity();
                     break;
                 case R.id.add_contact_button:
+                    if(contactDetailFragment == null){
+                        contactDetailFragment = ContactDetailFragment.newInstance(null,0);
+                        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                        transaction.replace(R.id.contact_detail_fragment,contactDetailFragment);
+                        transaction.addToBackStack(null);
+                        transaction.commit();
+                    }else{
+                        contactDetailFragment.refreshView(null,0);
+                    }
+                    contactDetailFragmentLayout.setVisibility(View.VISIBLE);
+                    contactDetailBackground.setVisibility(View.VISIBLE);
                     break;
             }
         }
@@ -106,13 +129,21 @@ public class ContactsActivity extends BaseActivity{
 
     public void deleteContact(int position) {
         HLLog.showLog("ContactsActivity","deleteContact",""+position);
-        datas.remove(position);
-        adapter.notifyDataSetChanged();
-        if(datas.size() < 1){
-            noDataInfo.setVisibility(View.VISIBLE);
-        }else{
-            noDataInfo.setVisibility(View.GONE);
+        PersonSqlDao personSqlDao = new PersonSqlDao(getBaseContext());
+        boolean isSuccess = personSqlDao.delete(datas.get(position));
+        if(isSuccess) {
+            datas.remove(position);
+            adapter.notifyDataSetChanged();
+            if (datas.size() < 1) {
+                noDataInfo.setVisibility(View.VISIBLE);
+            } else {
+                noDataInfo.setVisibility(View.GONE);
+            }
         }
+    }
+
+    public void refreshContacts(){
+        new Handler(getMainLooper()).post(refreshRunnable);
     }
 
     @Override

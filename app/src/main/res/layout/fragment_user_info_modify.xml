@@ -40,15 +40,16 @@
 
     <ll.zhao.triptoyou.custom.HLLButton
         android:id="@+id/done_button"
-        android:layout_width="50dp"
+        android:layout_width="250dp"
         android:layout_height="50dp"
-        android:layout_marginEnd="8dp"
-        android:background="#00000000"
+        android:layout_marginTop="32dp"
+        android:background="@drawable/button_shape_blue"
         android:text="@string/done"
-        android:textColor="@color/deep_gray"
+        android:textColor="@color/white"
         android:textSize="15dp"
-        app:layout_constraintEnd_toEndOf="@+id/textView"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/user_tel" />
 
 
     <ImageView

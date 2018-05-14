@@ -409,39 +409,4 @@ public class Utils {
         return dataStore.getString(key,"");
     }
 
-
-    public static void cropImage(Intent data, Activity activity){
-        if(data == null || data.getData() == null){
-            return;
-        }
-        Uri selectedImageUri = data.getData();
-        File file = new File(activity.getExternalCacheDir(), "crop_image.png");
-        try {
-            if (file.exists()) {
-                file.delete();
-            }
-            file.createNewFile();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Uri outputUri = Uri.fromFile(file);
-        Intent intent = new Intent("com.android.camera.action.CROP");
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        }
-        intent.setDataAndType(selectedImageUri, "image/*");
-        intent.putExtra("crop", "true");
-        intent.putExtra("aspectX", 1);
-        intent.putExtra("aspectY", 1);
-        intent.putExtra("outputX", Utils.dp2pxS(activity,70));
-        intent.putExtra("outputY",  Utils.dp2pxS(activity,70));
-        intent.putExtra("scale", true);
-        //将剪切的图片保存到目标Uri中
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, outputUri);
-        intent.putExtra("return-data", false);
-        intent.putExtra("outputFormat", Bitmap.CompressFormat.PNG.toString());
-        intent.putExtra("noFaceDetection", true);
-        activity.startActivityForResult(intent, CROP_CODE);
-    }
-
 }

@@ -67,7 +67,7 @@
         android:gravity="bottom"
         android:hint="电话"
         android:imeOptions="actionNext"
-        android:inputType="text"
+        android:inputType="phone"
         android:lines="1"
         android:maxLength="13"
         android:paddingLeft="10dp"
@@ -95,10 +95,12 @@
         android:layout_height="40dp"
         android:layout_marginBottom="28dp"
         android:layout_marginEnd="16dp"
+        android:layout_marginStart="8dp"
         android:background="@drawable/button_shape_blue"
         android:text="@string/save"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/contact_detail_delete" />
 
 </android.support.constraint.ConstraintLayout>

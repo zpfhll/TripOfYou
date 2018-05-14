@@ -22,7 +22,7 @@ public class HLLAlert {
     }
 
     public static void showAlert(Context context, int resId,DialogInterface.OnClickListener listener){
-        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.AlertDialog);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setMessage(resId)
                 .setPositiveButton(R.string.ok,listener)
                 .setNegativeButton(R.string.undo,null).show();

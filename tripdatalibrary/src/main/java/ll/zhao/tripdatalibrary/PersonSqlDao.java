@@ -28,6 +28,10 @@ public class PersonSqlDao{
 
     private static final String selectSql = "select * from " + BaseDB.PERSON_TABLE;
 
+    private static final String deleteSql = "delete  from " + BaseDB.PERSON_TABLE + " where "+BaseDB.TEL_PERSON_COLUMN + " = ?";
+
+    private static final String selectSqlWhithOutSelf = "select * from " + BaseDB.PERSON_TABLE + " where "+BaseDB.TYPE_PERSON_COLUMN + " <> '1'";
+
     private Context context;
 
      public PersonSqlDao(Context context) {
@@ -103,7 +107,7 @@ public class PersonSqlDao{
 
     public List<PersonModel> getAllData() {
         SQLiteDatabase sqlDatabase = baseDB.getWritableDatabase();
-        Cursor cursor = sqlDatabase.rawQuery(selectSql,null);
+        Cursor cursor = sqlDatabase.rawQuery(selectSqlWhithOutSelf,null);
         List<PersonModel> baseModels = new ArrayList<>();
         while (cursor.moveToNext()){
             PersonModel personModel = new PersonModel();
@@ -115,6 +119,7 @@ public class PersonSqlDao{
                 personModel.setIcon(icon);
             }
             ZLog.showLog("PersonSqlDao","getAllData", personModel.toString());
+
             baseModels.add(personModel);
         }
         ZLog.showLog("PersonSqlDao","getAllData",baseModels.size() + "");
@@ -157,11 +162,12 @@ public class PersonSqlDao{
 
         StringBuffer selectStr = new StringBuffer(selectSql);
         selectStr.append(" ");
+        selectStr.append(" where ");
                 selectStr.append(BaseDB.TYPE_PERSON_COLUMN);
-                selectStr.append("='1'");
+                selectStr.append(" = '1'");
         ZLog.showLog("PersonSqlDao","getData", selectStr.toString());
         SQLiteDatabase sqlDatabase = baseDB.getWritableDatabase();
-        Cursor cursor = sqlDatabase.rawQuery(selectSql,null);
+        Cursor cursor = sqlDatabase.rawQuery(selectStr.toString(),null);
         PersonModel personModel = new PersonModel();
         while (cursor.moveToNext()){
             personModel.setTel(cursor.getString(cursor.getColumnIndex(BaseDB.TEL_PERSON_COLUMN)));
@@ -204,6 +210,59 @@ public class PersonSqlDao{
             sqlDatabase.close();
         }
         ZLog.showLog("PersonSqlDao","updateSelfInfo", isSuccess+"");
+        return isSuccess;
+    }
+
+    public boolean updateInfo(PersonModel personModel,String tel){
+        ZLog.showLog("PersonSqlDao","updateInfo", personModel.toString());
+        if(personModel == null || personModel.getKey() == null){
+            return false;
+        }
+        SQLiteDatabase sqlDatabase = null;
+        boolean isSuccess = true;
+        try {
+            sqlDatabase = baseDB.getWritableDatabase();
+            sqlDatabase.beginTransaction();
+
+            ContentValues cv = new ContentValues();
+            cv.put(BaseDB.TEL_PERSON_COLUMN,personModel.getTel());
+            cv.put(BaseDB.NAME_PERSON_COLUMN,personModel.getName());
+            if (personModel.getIcon() != null) {
+                cv.put(BaseDB.ICON_PERSON_COLUMN,Utils.bitmabToBytes(context, personModel.getIcon()));
+            }
+            sqlDatabase.update(BaseDB.PERSON_TABLE,cv,BaseDB.TEL_PERSON_COLUMN + " = ?",new String[]{tel});
+            sqlDatabase.setTransactionSuccessful();
+        }catch (SQLException e) {
+            isSuccess = false;
+            e.printStackTrace();
+        } finally {
+            // 结束
+            sqlDatabase.endTransaction();
+            sqlDatabase.close();
+        }
+        ZLog.showLog("PersonSqlDao","updateInfo", isSuccess+"");
+        return isSuccess;
+    }
+
+
+    public boolean delete(PersonModel personModel) {
+        ZLog.showLog("PersonSqlDao","delete", personModel.toString());
+        if(personModel == null || personModel.getKey() == null){
+            return true;
+        }
+        SQLiteDatabase sqlDatabase = null;
+        boolean isSuccess = true;
+        try {
+            sqlDatabase = baseDB.getWritableDatabase();
+            sqlDatabase.delete(BaseDB.PERSON_TABLE, BaseDB.TEL_PERSON_COLUMN + " = ?", new String[]{personModel.getKey()});
+        }catch (SQLException e) {
+            isSuccess = false;
+            e.printStackTrace();
+        } finally {
+            // 结束
+            sqlDatabase.close();
+        }
+        ZLog.showLog("PersonSqlDao","delete", isSuccess+"");
         return isSuccess;
     }
 

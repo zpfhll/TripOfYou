@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- 隐藏Activity窗口的ActionBar -->
         <item name="windowActionBar">false</item>
         <!-- 隐藏Activity窗口的Title标题栏 -->

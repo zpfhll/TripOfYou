@@ -13,4 +13,8 @@ public class HLLog {
         Log.i(TAG,"--->" + className+"." + methodName + ":"+log);
     }
 
+    public static void showLog(String className,String log){
+        Log.i(TAG,"--->" + className+ ":"+log);
+    }
+
 }

@@ -25,6 +25,11 @@
     <string name="top_modify_info_title_name">姓名</string>
     <string name="top_modify_info_title_tel">电话</string>
     <string name="top_modify_info_error_message">请输入新的姓名和电话号，或者更新头像！</string>
+    <string name="top_trip_nodata_info">让我们扬帆起航，开始新的行程！</string>
+
+    <string name="footprint_start">启程</string>
+    <string name="footprint_now">现在</string>
+    <string name="footprint_done">结束行程</string>
 
     <!-- contacts -->
     <string name="contacts_title">通讯录</string>

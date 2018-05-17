@@ -44,17 +44,14 @@ dependencies {
     implementation 'com.android.support.constraint:constraint-layout:1.1.0'
     implementation 'com.android.support:recyclerview-v7:27.1.1'
     // ViewModel and LiveData
-    implementation "android.arch.lifecycle:extensions:1.1.1"
+    implementation 'android.arch.lifecycle:extensions:1.1.1'
     // alternatively, just ViewModel
-    implementation "android.arch.lifecycle:viewmodel:1.1.1"
-
+    implementation 'android.arch.lifecycle:viewmodel:1.1.1'
     implementation 'com.facebook.rebound:rebound:0.3.8'
     //map
     implementation 'com.amap.api:map2d:latest.integration'
-    implementation 'com.amap.api:navi-3dmap:latest.integration'
     implementation 'com.amap.api:search:latest.integration'
     implementation 'com.amap.api:location:latest.integration'
-
     //パターンロックビュー
     implementation 'com.andrognito.patternlockview:patternlockview:1.0.0'
     implementation 'com.andrognito.patternlockview:patternlockview-reactive:1.0.0'

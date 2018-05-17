@@ -1,6 +1,7 @@
 package ll.zhao.triptoyou.top;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -105,33 +106,20 @@ public class TopActivity extends BaseActivity{
 
         personSqlDao = new PersonSqlDao(this);
 
-        PersonModel personModel = personSqlDao.getSelfData();
-        UserInfoFragment userInfoFragment = UserInfoFragment.newInstance(personModel);
-        addFragement(userInfoFragment,R.id.menu_user_info);
+        getPersonInfo();
 
         menuBackgroundHeigth = Utils.dp2pxS(this,50);
 
         TripModel tripModel1 = new TripModel();
         tripModel1.setImage1(BitmapFactory.decodeResource(getResources(),R.mipmap.i1));
-        TripModel tripModel2 = new TripModel();
-        tripModel2.setImage1(BitmapFactory.decodeResource(getResources(),R.mipmap.i2));
-        TripModel tripModel3 = new TripModel();
-        tripModel3.setImage1(BitmapFactory.decodeResource(getResources(),R.mipmap.i3));
-        TripModel tripModel4 = new TripModel();
-        tripModel4.setImage1(BitmapFactory.decodeResource(getResources(),R.mipmap.i4));
 
         fragmentList = new ArrayList<>();
-        fragmentList.add(TripCardFragment.init(tripModel1));
-        fragmentList.add(TripCardFragment.init(tripModel2));
-        fragmentList.add(TripCardFragment.init(tripModel3));
-        fragmentList.add(TripCardFragment.init(tripModel4));
-
+        fragmentList.add(TripCardFragment.initAdd(this));
 
         tripAdpter = new TripAdpter(getSupportFragmentManager(),fragmentList);
         tripPage.setOffscreenPageLimit(3);
         tripPage.setPageMargin(-Utils.dp2px(this,40));
         tripPage.setAdapter(tripAdpter);
-
         rootBackground.setImageBitmap(Utils.toBlur(fragmentList.get(tripPage.getCurrentItem()).getTripModel().getImage1(),10));
         tripPage.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -210,6 +198,18 @@ public class TopActivity extends BaseActivity{
             }
         });
 
+    }
+
+
+    private void getPersonInfo(){
+        new Handler(getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                PersonModel personModel = personSqlDao.getSelfData();
+                UserInfoFragment userInfoFragment = UserInfoFragment.newInstance(personModel);
+                addFragement(userInfoFragment,R.id.menu_user_info);
+            }
+        });
     }
 
 

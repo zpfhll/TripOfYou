@@ -12,6 +12,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import ll.zhao.tripdatalibrary.model.FootPrintModel;
 import ll.zhao.triptoyou.R;
 
 /**
@@ -20,9 +21,9 @@ import ll.zhao.triptoyou.R;
 
 public class TripFootprintAdapter extends RecyclerView.Adapter<TripFootprintAdapter.ViewHolder> {
 
-    private List<String> mData;
+    private List<FootPrintModel> mData;
 
-    public TripFootprintAdapter(List<String> data) {
+    public TripFootprintAdapter(List<FootPrintModel> data) {
         this.mData = data;
 
     }
@@ -39,26 +40,38 @@ public class TripFootprintAdapter extends RecyclerView.Adapter<TripFootprintAdap
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        FootPrintModel model = mData.get(position);
 
-        if(position == mData.size()){//现在时间
-            holder.time.setText("现在");
+        if(model.getFootPrintType().equals("do")){
             holder.timeLine.setImageResource(R.mipmap.time_line_add);
             holder.footContent.setVisibility(View.GONE);
             holder.footImage.setImageResource(R.mipmap.add_card);
             holder.footImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    //TODO 足迹添加
                     Log.i("add","add footprint");
                 }
             });
+
+        }else if(model.getFootPrintType().equals("end")){
+            holder.timeLine.setImageResource(R.mipmap.time_line_add);
+            holder.footContent.setVisibility(View.GONE);
+            holder.footImage.setVisibility(View.GONE);
         }else {
             if (position == 0) {//第一个
                 holder.timeLine.setImageResource(R.mipmap.time_line_first);
+                holder.footContent.setVisibility(View.GONE);
+                holder.footImage.setVisibility(View.GONE);
             } else {
                 // 绑定数据
+                if(model.getIcon() != null){
+                    holder.footImage.setImageBitmap(model.getIcon());
+                }
+                holder.footContent.setText(model.getFootPrintLocation());
             }
-            holder.time.setText(mData.get(position));
         }
+        holder.time.setText(model.getFootPrintTime());
     }
 
     @Override

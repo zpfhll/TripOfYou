@@ -24,6 +24,19 @@ public class TripModel extends BaseModel {
     private Bitmap image1;
     private Bitmap image2;
 
+    @Override
+    public String toString() {
+        String str = "id:" + id + " trip_name:" + trip_name + " memo:" + memo + " location:" + location+ " count:" + count
+                + " start_time:" + start_time+ " end_time:" + end_time+ " state:" + state+ " administrator:" + administrator+ " loction_id:" + loction_id;
+        return str;
+    }
+
+    @Override
+    public String getKey() {
+        super.getKey();
+        return id;
+    }
+
     public Bitmap getImage1() {
         return image1;
     }
@@ -127,6 +140,8 @@ public class TripModel extends BaseModel {
     public void setLoction_id(String loction_id) {
         this.loction_id = loction_id;
     }
+
+
 
 
 }

@@ -18,6 +18,7 @@ public class BaseActivity extends FragmentActivity implements View.OnClickListen
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if(keyCode == KeyEvent.KEYCODE_BACK && deviceBackIsEnable){
+            backOnClick(keyCode,event);
             return super.onKeyDown(keyCode, event);
         }else{
             return false;
@@ -30,6 +31,8 @@ public class BaseActivity extends FragmentActivity implements View.OnClickListen
     }
 
     protected void  baseOnClick(View v){}
+
+    protected void  backOnClick(int keyCode, KeyEvent event){}
 
     protected void closeActivity(){
         finish();

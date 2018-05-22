@@ -5,14 +5,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/contacts_item_background"
     android:layout_width="match_parent"
-    android:layout_height="65dp">
+    android:layout_height="55dp">
 
     <TextView
         android:id="@+id/tip_name"
         android:layout_width="0dp"
         android:layout_height="20dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="14dp"
+        android:layout_marginTop="10dp"
         android:gravity="center_vertical"
         android:text="12345"
         android:textSize="15dp"
@@ -24,7 +24,7 @@
         android:id="@+id/tip_location"
         android:layout_width="0dp"
         android:layout_height="15dp"
-        android:layout_marginBottom="14dp"
+        android:layout_marginBottom="8dp"
         android:layout_marginStart="16dp"
         android:gravity="center_vertical"
         android:text="12345"

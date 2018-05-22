@@ -36,13 +36,14 @@ import ll.zhao.triptoyou.contacts.ContactsActivity;
 import ll.zhao.triptoyou.custom.HLLButton;
 import ll.zhao.triptoyou.map.MapActivity;
 import ll.zhao.triptoyou.model.UserInfoViewModel;
+import ll.zhao.triptoyou.userinfo.UserInfoActivity;
 
 /**
  * Created by Administrator on 2018/3/25.
  */
 public class TopActivity extends BaseActivity{
 
-
+    private static final int MODIFY_REQUEST_CODE = 1;
 
     private List<TripCardFragment> fragmentList;
     private TripAdpter tripAdpter;
@@ -260,9 +261,12 @@ public class TopActivity extends BaseActivity{
                         showMenuSpring.setEndValue(0);
                     }
                     PersonModel personModel = personSqlDao.getSelfData();
-                    UserInfoModifyFragment userInfoFragment = UserInfoModifyFragment.newInstance(personModel);
-                    addFragement(userInfoFragment,R.id.user_info_modify);
-                    menuUserInfoModifyView.setVisibility(View.VISIBLE);
+//                    UserInfoModifyFragment userInfoFragment = UserInfoModifyFragment.newInstance(personModel);
+//                    addFragement(userInfoFragment,R.id.user_info_modify);
+//                    menuUserInfoModifyView.setVisibility(View.VISIBLE);
+                    Intent modifyIntent = new Intent(TopActivity.this, UserInfoActivity.class);
+                    modifyIntent.putExtra("userInfo",personModel);
+                    startActivityForResult(modifyIntent,MODIFY_REQUEST_CODE);
                     break;
                 case R.id.persons:
                     Intent intent1 = new Intent(TopActivity.this, ContactsActivity.class);
@@ -287,15 +291,22 @@ public class TopActivity extends BaseActivity{
         transaction.commit();
     }
 
-    public void hiddenUserInfoModify(boolean isRefresh){
-        if(menuUserInfoModifyView.getVisibility() == View.VISIBLE){
-            menuUserInfoModifyView.setVisibility(View.GONE);
-            getSupportFragmentManager().popBackStack();
-            if(isRefresh){
-                PersonModel personModel = personSqlDao.getSelfData();
-                ViewModelProviders.of(this).get(UserInfoViewModel.class).getUserInfo().setValue(personModel);
-            }
-        }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        PersonModel personModel = personSqlDao.getSelfData();
+        ViewModelProviders.of(this).get(UserInfoViewModel.class).getUserInfo().setValue(personModel);
     }
+
+//    public void hiddenUserInfoModify(boolean isRefresh){
+//        if(menuUserInfoModifyView.getVisibility() == View.VISIBLE){
+//            menuUserInfoModifyView.setVisibility(View.GONE);
+//            getSupportFragmentManager().popBackStack();
+//            if(isRefresh){
+//                PersonModel personModel = personSqlDao.getSelfData();
+//                ViewModelProviders.of(this).get(UserInfoViewModel.class).getUserInfo().setValue(personModel);
+//            }
+//        }
+//    }
 
 }

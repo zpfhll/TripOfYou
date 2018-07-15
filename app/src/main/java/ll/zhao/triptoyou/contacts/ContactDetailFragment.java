@@ -19,13 +19,12 @@ import android.widget.ImageView;
 import java.io.File;
 import java.io.IOException;
 
-import ll.zhao.tripdatalibrary.PersonSqlDao;
-import ll.zhao.tripdatalibrary.model.PersonModel;
 import ll.zhao.triptoyou.R;
 import ll.zhao.triptoyou.Utils;
 import ll.zhao.triptoyou.custom.HLLAlert;
 import ll.zhao.triptoyou.custom.HLLButton;
-import ll.zhao.triptoyou.top.TopActivity;
+import ll.zhao.triptoyou.database.DataManager;
+import ll.zhao.triptoyou.database.Person;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -38,7 +37,7 @@ public class ContactDetailFragment extends Fragment implements View.OnClickListe
     private EditText contactTel;
     private HLLButton delteButton;
     private HLLButton saveButton;
-    private PersonModel userInfo;
+    private Person userInfo;
     private int position;
     private Bitmap chanedImage;
 
@@ -53,7 +52,7 @@ public class ContactDetailFragment extends Fragment implements View.OnClickListe
         // Required empty public constructor
     }
 
-    public static  ContactDetailFragment newInstance(PersonModel userInfo,int position) {
+    public static  ContactDetailFragment newInstance(Person userInfo, int position) {
         if(contactDetailFragment == null){
             synchronized (ContactDetailFragment.class) {
                 if(contactDetailFragment == null){
@@ -78,7 +77,7 @@ public class ContactDetailFragment extends Fragment implements View.OnClickListe
         saveButton = view.findViewById(R.id.contact_detail_save);
         if(userInfo != null && !userInfo.getName().equals("") && !userInfo.getTel().equals("")) {
             if(userInfo.getIcon() != null) {
-                contactIcon.setImageBitmap(userInfo.getIcon());
+                contactIcon.setImageBitmap(userInfo.getBitmapIcon());
             }else{
                 contactIcon.setImageResource(R.mipmap.ic_launcher);
             }
@@ -87,7 +86,7 @@ public class ContactDetailFragment extends Fragment implements View.OnClickListe
         }else{
             contactName.setText("");
             contactTel.setText("");
-            this.userInfo = new PersonModel();
+            this.userInfo = new Person();
             delteButton.setVisibility(View.GONE);
             contactIcon.setImageResource(R.mipmap.ic_launcher);
         }
@@ -100,23 +99,23 @@ public class ContactDetailFragment extends Fragment implements View.OnClickListe
         return view;
     }
 
-    public void setUserInfo(PersonModel userInfo) {
+    public void setUserInfo(Person userInfo) {
         this.userInfo = userInfo;
     }
 
-    public void refreshView(PersonModel userInfo,int position){
+    public void refreshView(Person userInfo,int position){
         this.userInfo = userInfo;
         delteButton.setVisibility(View.VISIBLE);
         if(userInfo != null && !userInfo.getName().equals("") && !userInfo.getTel().equals("")) {
             if(userInfo.getIcon() != null) {
-                contactIcon.setImageBitmap(userInfo.getIcon());
+                contactIcon.setImageBitmap(userInfo.getBitmapIcon());
             }else{
                 contactIcon.setImageResource(R.mipmap.ic_launcher);
             }
             contactName.setText(userInfo.getName());
             contactTel.setText(userInfo.getTel());
         }else{
-            this.userInfo = new PersonModel();
+            this.userInfo = new Person();
             contactName.setText("");
             contactTel.setText("");
             delteButton.setVisibility(View.GONE);
@@ -154,14 +153,13 @@ public class ContactDetailFragment extends Fragment implements View.OnClickListe
                     userInfo.setName(userNmaeStr);
                     userInfo.setTel(userTelStr);
                     if(chanedImage != null){
-                        userInfo.setIcon(chanedImage);
+                        userInfo.setBitmapIcon(chanedImage);
                     }
-                    PersonSqlDao personSqlDao = new PersonSqlDao(getContext());
                     if(delteButton.getVisibility() == View.VISIBLE){
-                        personSqlDao.updateInfo(userInfo,tel);
+                        DataManager.updatePerson(userInfo);
                     }else{
                         userInfo.setType("0");
-                        personSqlDao.insert(userInfo);
+                        DataManager.insertPerson(userInfo);
                     }
                     activity.onBackPressed();
                     activity.refreshContacts();

@@ -1,5 +1,8 @@
 package ll.zhao.triptoyou;
 
+import android.os.Bundle;
+import android.os.PersistableBundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -14,6 +17,12 @@ public class BaseActivity extends FragmentActivity implements View.OnClickListen
     protected  boolean deviceBackIsEnable = true;
     protected  static boolean clickIsDone = true;
 
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+    }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {

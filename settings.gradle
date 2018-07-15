@@ -1,1 +1,1 @@
-include ':app', ':tripdatalibrary'
+include ':app'

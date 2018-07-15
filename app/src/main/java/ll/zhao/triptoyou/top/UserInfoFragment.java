@@ -11,15 +11,15 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import ll.zhao.tripdatalibrary.model.PersonModel;
 import ll.zhao.triptoyou.R;
+import ll.zhao.triptoyou.database.Person;
 import ll.zhao.triptoyou.model.UserInfoViewModel;
 
 
 public class UserInfoFragment extends Fragment {
 
     private UserInfoViewModel userInfoViewModel;
-    private PersonModel userInfo;
+    private Person userInfo;
     private ImageView userImage;
     private TextView userName;
 
@@ -27,7 +27,7 @@ public class UserInfoFragment extends Fragment {
     }
 
 
-    public static UserInfoFragment newInstance(PersonModel userInfo) {
+    public static UserInfoFragment newInstance(Person userInfo) {
         UserInfoFragment fragment = new UserInfoFragment();
         fragment.setUserInfo(userInfo);
         return fragment;
@@ -42,11 +42,11 @@ public class UserInfoFragment extends Fragment {
         userImage.setClipToOutline(true);
         userName =rootView.findViewById(R.id.user_name);
         userInfoViewModel = ViewModelProviders.of(getActivity()).get(UserInfoViewModel.class);
-        userInfoViewModel.getUserInfo().observe(this, new Observer<PersonModel>() {
+        userInfoViewModel.getUserInfo().observe(this, new Observer<Person>() {
             @Override
-            public void onChanged(@Nullable PersonModel personModel) {
-                userImage.setImageBitmap(personModel.getIcon());
-                userName.setText(personModel.getName());
+            public void onChanged(@Nullable Person person) {
+                userImage.setImageBitmap(person.getBitmapIcon());
+                userName.setText(person.getName());
             }
         });
 
@@ -56,11 +56,11 @@ public class UserInfoFragment extends Fragment {
     }
 
 
-    public PersonModel getUserInfo() {
+    public Person getUserInfo() {
         return userInfo;
     }
 
-    public void setUserInfo(PersonModel userInfo) {
+    public void setUserInfo(Person userInfo) {
         this.userInfo = userInfo;
     }
 

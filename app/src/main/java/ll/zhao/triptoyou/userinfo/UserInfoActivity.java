@@ -6,9 +6,9 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,20 +17,21 @@ import android.widget.ImageView;
 import java.io.File;
 import java.io.IOException;
 
-import ll.zhao.tripdatalibrary.PersonSqlDao;
-import ll.zhao.tripdatalibrary.model.PersonModel;
 import ll.zhao.triptoyou.BaseActivity;
 import ll.zhao.triptoyou.R;
 import ll.zhao.triptoyou.Utils;
 import ll.zhao.triptoyou.custom.HLLAlert;
+import ll.zhao.triptoyou.database.DataManager;
+import ll.zhao.triptoyou.database.Person;
 import ll.zhao.triptoyou.top.TopActivity;
+import ll.zhao.triptoyou.top.UserInfoFragment;
 
 public class UserInfoActivity extends BaseActivity {
     public static final int IMAGE_CODE = 1;
     public static final int CROP_CODE = 2;
     public static final int MODIFY_RESPONSE = 2;
 
-    private PersonModel userInfo;
+    private Person userInfo;
     private ImageView userImage;
     private EditText userName;
     private EditText userTel;
@@ -43,21 +44,24 @@ public class UserInfoActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_user_info_modify);
 
-        userInfo = getIntent().getParcelableExtra("userInfo");
-
         userImage = findViewById(R.id.user_image);
         userName =findViewById(R.id.user_name);
         userTel  =findViewById(R.id.user_tel);
         closeBtn  =findViewById(R.id.close_modify);
         doneBtn =findViewById(R.id.done_button);
-        userImage.setImageBitmap(userInfo.getIcon());
-        userImage.setClipToOutline(true);
-        userName.setHint(userInfo.getName());
-        userName.setText(userInfo.getName());
-        userTel.setHint(userInfo.getTel());
-        userTel.setText(userInfo.getTel());
 
-
+        new Handler(getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                userInfo = DataManager.getSelfInfo();
+                userImage.setImageBitmap(userInfo.getBitmapIcon());
+                userImage.setClipToOutline(true);
+                userName.setHint(userInfo.getName());
+                userName.setText(userInfo.getName());
+                userTel.setHint(userInfo.getTel());
+                userTel.setText(userInfo.getTel());
+            }
+        });
 
         closeBtn.setOnClickListener(this);
         doneBtn.setOnClickListener(this);
@@ -83,10 +87,9 @@ public class UserInfoActivity extends BaseActivity {
                     userInfo.setName(userNmaeStr);
                     userInfo.setTel(userTelStr);
                     if(chanedImage != null){
-                        userInfo.setIcon(chanedImage);
+                        userInfo.setBitmapIcon(chanedImage);
                     }
-                    PersonSqlDao personSqlDao = new PersonSqlDao(this);
-                    personSqlDao.updateSelfInfo(userInfo);
+                    DataManager.updatePerson(userInfo);
                     setResult(MODIFY_RESPONSE);
                     finish();
                 }

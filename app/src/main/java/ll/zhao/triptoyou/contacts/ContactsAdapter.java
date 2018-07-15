@@ -8,10 +8,11 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import java.util.List;
 
-import ll.zhao.tripdatalibrary.model.PersonModel;
 import ll.zhao.triptoyou.R;
+import ll.zhao.triptoyou.database.Person;
 
 /**
  * Created by Administrator on 2018/5/3.
@@ -19,7 +20,7 @@ import ll.zhao.triptoyou.R;
 
 public class ContactsAdapter extends BaseAdapter{
 
-    private List<PersonModel> datas;
+    private List<Person> datas;
     private Context context;
 
     @Override
@@ -28,7 +29,7 @@ public class ContactsAdapter extends BaseAdapter{
     }
 
     @Override
-    public PersonModel getItem(int position) {
+    public Person getItem(int position) {
         return datas.get(position);
     }
 
@@ -50,7 +51,7 @@ public class ContactsAdapter extends BaseAdapter{
         }
         holder.contactName.setText(datas.get(position).getName());
         holder.contactTel.setText(datas.get(position).getTel());
-        holder.contactIcon.setImageBitmap(datas.get(position).getIcon());
+        holder.contactIcon.setImageBitmap(datas.get(position).getBitmapIcon());
         return convertView;
     }
 
@@ -72,7 +73,7 @@ public class ContactsAdapter extends BaseAdapter{
 
     }
 
-    ContactsAdapter(List<PersonModel> datas, Context context){
+    ContactsAdapter(List<Person> datas, Context context){
         this.datas = datas;
         this.context = context;
     }

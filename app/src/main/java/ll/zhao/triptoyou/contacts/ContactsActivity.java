@@ -13,12 +13,12 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import ll.zhao.tripdatalibrary.PersonSqlDao;
-import ll.zhao.tripdatalibrary.model.PersonModel;
 import ll.zhao.triptoyou.BaseActivity;
 import ll.zhao.triptoyou.HLLog;
 import ll.zhao.triptoyou.R;
 import ll.zhao.triptoyou.custom.HLLButton;
+import ll.zhao.triptoyou.database.DataManager;
+import ll.zhao.triptoyou.database.Person;
 
 public class ContactsActivity extends BaseActivity{
     private ListView listView;
@@ -28,7 +28,7 @@ public class ContactsActivity extends BaseActivity{
     private HLLButton backBtn;
     private TextView noDataInfo;
 
-    private  List<PersonModel> datas;
+    private  List<Person> datas;
     private FrameLayout contactDetailFragmentLayout;
     private View contactDetailBackground;
     private ContactDetailFragment contactDetailFragment;
@@ -85,9 +85,8 @@ public class ContactsActivity extends BaseActivity{
         refreshRunnable = new Runnable() {
             @Override
             public void run() {
-                PersonSqlDao personSqlDao = new PersonSqlDao(getBaseContext());
                 datas.clear();
-                datas.addAll(personSqlDao.getAllData());
+                datas.addAll(DataManager.getAllFriend());
                 if(datas.size() < 1){
                     noDataInfo.setVisibility(View.VISIBLE);
                 }else{
@@ -129,16 +128,13 @@ public class ContactsActivity extends BaseActivity{
 
     public void deleteContact(int position) {
         HLLog.showLog("ContactsActivity","deleteContact",""+position);
-        PersonSqlDao personSqlDao = new PersonSqlDao(getBaseContext());
-        boolean isSuccess = personSqlDao.delete(datas.get(position));
-        if(isSuccess) {
-            datas.remove(position);
-            adapter.notifyDataSetChanged();
-            if (datas.size() < 1) {
-                noDataInfo.setVisibility(View.VISIBLE);
-            } else {
-                noDataInfo.setVisibility(View.GONE);
-            }
+        DataManager.deletePerson(datas.get(position));
+        datas.remove(position);
+        adapter.notifyDataSetChanged();
+        if (datas.size() < 1) {
+            noDataInfo.setVisibility(View.VISIBLE);
+        } else {
+            noDataInfo.setVisibility(View.GONE);
         }
     }
 

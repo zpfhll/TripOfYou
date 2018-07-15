@@ -3,7 +3,6 @@ package ll.zhao.triptoyou.top;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
@@ -14,7 +13,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -25,15 +23,14 @@ import com.facebook.rebound.SpringSystem;
 import java.util.ArrayList;
 import java.util.List;
 
-import ll.zhao.tripdatalibrary.BaseDB;
-import ll.zhao.tripdatalibrary.PersonSqlDao;
-import ll.zhao.tripdatalibrary.model.PersonModel;
 import ll.zhao.tripdatalibrary.model.TripModel;
 import ll.zhao.triptoyou.BaseActivity;
 import ll.zhao.triptoyou.R;
 import ll.zhao.triptoyou.Utils;
 import ll.zhao.triptoyou.contacts.ContactsActivity;
 import ll.zhao.triptoyou.custom.HLLButton;
+import ll.zhao.triptoyou.database.DataManager;
+import ll.zhao.triptoyou.database.Person;
 import ll.zhao.triptoyou.map.MapActivity;
 import ll.zhao.triptoyou.model.UserInfoViewModel;
 import ll.zhao.triptoyou.userinfo.UserInfoActivity;
@@ -76,8 +73,6 @@ public class TopActivity extends BaseActivity{
     //按钮是否按下
     private boolean isClicked = false;
 
-    private PersonSqlDao personSqlDao;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,8 +99,6 @@ public class TopActivity extends BaseActivity{
         menuUserInfoView = findViewById(R.id.menu_user_info);
         menuUserInfoView.setOnClickListener(this);
         menuUserInfoView.setVisibility(View.GONE);
-
-        personSqlDao = new PersonSqlDao(this);
 
         getPersonInfo();
 
@@ -206,8 +199,8 @@ public class TopActivity extends BaseActivity{
         new Handler(getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
-                PersonModel personModel = personSqlDao.getSelfData();
-                UserInfoFragment userInfoFragment = UserInfoFragment.newInstance(personModel);
+                Person person = DataManager.getSelfInfo();
+                UserInfoFragment userInfoFragment = UserInfoFragment.newInstance(person);
                 addFragement(userInfoFragment,R.id.menu_user_info);
             }
         });
@@ -260,12 +253,13 @@ public class TopActivity extends BaseActivity{
                         showMenuSpring.setCurrentValue(1);
                         showMenuSpring.setEndValue(0);
                     }
-                    PersonModel personModel = personSqlDao.getSelfData();
+//                    PersonModel personModel = personSqlDao.getSelfData();
+
 //                    UserInfoModifyFragment userInfoFragment = UserInfoModifyFragment.newInstance(personModel);
 //                    addFragement(userInfoFragment,R.id.user_info_modify);
 //                    menuUserInfoModifyView.setVisibility(View.VISIBLE);
                     Intent modifyIntent = new Intent(TopActivity.this, UserInfoActivity.class);
-                    modifyIntent.putExtra("userInfo",personModel);
+//                    modifyIntent.putExtra("userInfo",person);
                     startActivityForResult(modifyIntent,MODIFY_REQUEST_CODE);
                     break;
                 case R.id.persons:
@@ -294,8 +288,7 @@ public class TopActivity extends BaseActivity{
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        PersonModel personModel = personSqlDao.getSelfData();
-        ViewModelProviders.of(this).get(UserInfoViewModel.class).getUserInfo().setValue(personModel);
+        ViewModelProviders.of(this).get(UserInfoViewModel.class).getUserInfo().setValue(DataManager.getSelfInfo());
     }
 
 //    public void hiddenUserInfoModify(boolean isRefresh){

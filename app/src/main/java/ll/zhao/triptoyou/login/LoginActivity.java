@@ -14,14 +14,15 @@ import com.andrognito.patternlockview.utils.PatternLockUtils;
 
 import java.util.List;
 
-import ll.zhao.tripdatalibrary.PersonSqlDao;
-import ll.zhao.tripdatalibrary.model.PersonModel;
 import ll.zhao.triptoyou.BaseActivity;
+import ll.zhao.triptoyou.Constants;
 import ll.zhao.triptoyou.HLLog;
 import ll.zhao.triptoyou.R;
 import ll.zhao.triptoyou.Utils;
 import ll.zhao.triptoyou.custom.HLLAlert;
 import ll.zhao.triptoyou.custom.HLLButton;
+import ll.zhao.triptoyou.database.DataManager;
+import ll.zhao.triptoyou.database.Person;
 import ll.zhao.triptoyou.top.TopActivity;
 
 public class LoginActivity extends BaseActivity {
@@ -112,16 +113,16 @@ public class LoginActivity extends BaseActivity {
     private void saveInfo(){
         String name = nameEdit.getText().toString();
         String tel = telEdit.getText().toString();
-        PersonSqlDao personSqlDao = new PersonSqlDao(this);
 
-        PersonModel personModel = new PersonModel();
-        personModel.setTel(tel);
-        personModel.setName(name);
-        personModel.setType("1");
+        Person person = new Person();
+        person.setTel(tel);
+        person.setName(name);
+        person.setType(Constants.PERSON_TYPE_S);
         //TODO:画像还未处理
-        personModel.setIcon(BitmapFactory.decodeResource(getResources(),R.mipmap.ic_launcher));
-        boolean result = personSqlDao.insert(personModel);
-        if(!result){
+        person.setBitmapIcon(BitmapFactory.decodeResource(getResources(),R.mipmap.ic_launcher));
+        long id = DataManager.insertPerson(person);
+        HLLog.showLog(this,"insert:"+id);
+        if(id <= 0){
             HLLAlert.showAlert(LoginActivity.this,R.string.login_error_message1);
             isFirstPattern = true;
             patternFirst = "";

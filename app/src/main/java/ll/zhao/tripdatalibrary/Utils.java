@@ -2,7 +2,6 @@ package ll.zhao.tripdatalibrary;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
